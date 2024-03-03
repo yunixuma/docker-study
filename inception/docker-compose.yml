@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx-container
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - my-network
+    volumes:
+      - wordpress-files:/var/www/html
+      - nginx-conf:/etc/nginx/conf.d
+    depends_on:
+      - wordpress
+    restart: always
+
+  # php-fpm:
+  #   build:
+  #     context: ./php-fpm
+  #   container_name: php-fpm-container
+  #   networks:
+  #     - my-network
+  #   volumes:
+  #     - wordpress-files:/var/www/html
+  #   depends_on:
+  #     - mariadb
+  #   restart: always
+
+  wordpress:
+    build:
+      context: ./wordpress
+    container_name: wordpress-container
+    networks:
+      - my-network
+    volumes:
+      - wordpress-files:/var/www/html
+    depends_on:
+      - mariadb
+    restart: always
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb-container
+    networks:
+      - my-network
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password
+      MYSQL_DATABASE: your_database_name
+      MYSQL_USER: your_database_user
+      MYSQL_PASSWORD: your_database_password
+    restart: always
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  wordpress-files:
+  nginx-conf:
+  mariadb-data:
