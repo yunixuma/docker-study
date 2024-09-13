@@ -16,7 +16,7 @@ services:
       - wordpress-files:/var/www/html
       - nginx-conf:/etc/nginx/conf.d
     # env_file:
-    #   - ./.env
+    #   - ../.env
     depends_on:
       - wordpress
     restart: always
@@ -49,7 +49,7 @@ services:
     volumes:
       - wordpress-files:/home/${USER}/data/wordpress
     env_file:
-      - ./.env
+      - ../.env
     depends_on:
       - mariadb
     restart: always
@@ -71,7 +71,7 @@ services:
     #   MYSQL_USER: your_database_user
     #   MYSQL_PASSWORD: your_database_password
     env_file:
-      - ./.env
+      - ../.env
     restart: always
 
 networks:
