@@ -13,11 +13,12 @@
 - `Makefile` calls `docker-compose.yml`
 ### Container
 - Require 3 services: nginx, wordpress, mariadb
+- Don't pull Docker images from DockerHub, need to build yourself
+- `latest` tag is prohibited
 - The name of each Docker image is same as the service
 - nginx container contain nginx, TLSv1.2 or TLSv1.3
 - wordpress container contain WordPress + php-fpm without nginx
 - mariadb container contain MariaDB without nginx
-- `latest` tag is prohibited
 ### Volume
 - Require 2 volumes
 - The wordpress container uses one volume for the WordPress website files

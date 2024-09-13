@@ -6,13 +6,17 @@ services:
       context: ./nginx
     container_name: nginx-container
     ports:
-      - "80:80"
+      # - "80:80"
       - "443:443"
+      # - "9000:9000"
     networks:
       - my-network
+      # - front-net
     volumes:
       - wordpress-files:/var/www/html
       - nginx-conf:/etc/nginx/conf.d
+    # env_file:
+    #   - ./.env
     depends_on:
       - wordpress
     restart: always
@@ -33,31 +37,50 @@ services:
     build:
       context: ./wordpress
     container_name: wordpress-container
+    # environment:
+    #   DATABASE_URL: mysql://your_database_user:password@mariadb/your_database_name
+    # ports:
+      # - "9000:9000"
+      # - "3389:3389"
     networks:
       - my-network
+      # - front-net
+      # - backend-net
     volumes:
-      - wordpress-files:/var/www/html
+      - wordpress-files:/home/${USER}/data/wordpress
+    env_file:
+      - ./.env
     depends_on:
       - mariadb
     restart: always
 
   mariadb:
-    image: mariadb
+    build:
+      context: ./mariadb
     container_name: mariadb-container
+    # ports:
+      # - "3306:3306"
     networks:
       - my-network
+      # - backend-net
     volumes:
-      - mariadb-data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: your_root_password
-      MYSQL_DATABASE: your_database_name
-      MYSQL_USER: your_database_user
-      MYSQL_PASSWORD: your_database_password
+      - wordpress-files:/home/${USER}/data/mariadb
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: your_root_password
+    #   MYSQL_DATABASE: your_database_name
+    #   MYSQL_USER: your_database_user
+    #   MYSQL_PASSWORD: your_database_password
+    env_file:
+      - ./.env
     restart: always
 
 networks:
   my-network:
     driver: bridge
+  # front-net:
+  #   driver: bridge
+  # backend-net:
+  #   driver: bridge
 
 volumes:
   wordpress-files:
