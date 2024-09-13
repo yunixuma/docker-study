@@ -10,14 +10,17 @@ CTNR_SV		= $(SV)-$(FIX_CTNR)
 CTNR_APP	= $(APP)-$(FIX_CTNR)
 CTNR_DB		= $(DB)-$(FIX_CTNR)
 
-up:
+up: dir
+	docker compose up -d --build
+dir:
 	-mkdir -p ~/data
 	-mkdir -p ~/data/nginx
 	-mkdir -p ~/data/mariadb
-	docker-compose up -d --build
-build:
+build: dir
 	-docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	docker compose build --no-cache
+start:
+	docker compose start
 login-sv:
 	docker exec -it $(CTNR_SV) /bin/sh
 login-app:
@@ -32,9 +35,9 @@ log-db:
 	docker logs --tail 50 --follow --timestamps $(CTNR_DB)
 stop:
 	docker-compose stop
-down:
+down: stop
 	docker-compose down
-clean:
+clean: stop
 	-docker compose down -v
 	-docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	-docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
