@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nginx:
     build:
-      context: ./nginx
+      context: ./srcs/nginx
     container_name: nginx-container
     ports:
       # - "80:80"
@@ -35,7 +35,7 @@ services:
 
   wordpress:
     build:
-      context: ./wordpress
+      context: ./srcs/wordpress
     container_name: wordpress-container
     # environment:
     #   DATABASE_URL: mysql://your_database_user:password@mariadb/your_database_name
@@ -56,7 +56,7 @@ services:
 
   mariadb:
     build:
-      context: ./mariadb
+      context: ./srcs/mariadb
     container_name: mariadb-container
     # ports:
       # - "3306:3306"
