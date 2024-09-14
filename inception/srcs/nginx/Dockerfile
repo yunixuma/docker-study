@@ -5,6 +5,8 @@ FROM debian:bullseye-slim
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes nginx
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes openssl
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes ca-certificates
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 RUN rm -rf /var/lib/apt/lists/*
 
 # Configure PHP-FPM
@@ -20,5 +22,17 @@ RUN rm -rf /var/lib/apt/lists/*
 # Copy WordPress files
 # COPY . /var/www/html
 
-# Start the WordPress application
-# CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+CMD ["which", "cat"]
+CMD ["which", "ls"]
+CMD ["cat", "/etc/os-release"]
+# CMD ["ls", "-l", "/var/log/"]
+CMD ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
+CMD ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
+# CMD ["tail", "-f", "/var/log/syslog"]
+# CMD ["cat", "/var/log/mysql/error.log"]
+# CMD ["cat", "/var/log/faillog"]
+# CMD ["cat", "/var/log/lastlog"]
+
+COPY ./nginx.conf /etc/nginx/
+
+CMD ["nginx", "-g", "daemon off;"]

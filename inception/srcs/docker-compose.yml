@@ -2,9 +2,10 @@ version: '3.8'
 
 services:
   nginx:
+    image: ${IMG_SV}
     build:
-      context: ./srcs/nginx
-    container_name: nginx-container
+      context: ./${SV}
+    container_name: ${CTNR_SV}
     ports:
       # - "80:80"
       - "443:443"
@@ -12,31 +13,19 @@ services:
     networks:
       - my-network
       # - front-net
-    volumes:
-      - wordpress-files:/var/www/html
-      - nginx-conf:/etc/nginx/conf.d
+    # volumes:
+      # - sv-conf: /etc/nginx/conf.d
     # env_file:
-    #   - ../.env
+    #   - ${ENV_FILE}
     depends_on:
       - wordpress
     restart: always
 
-  # php-fpm:
-  #   build:
-  #     context: ./php-fpm
-  #   container_name: php-fpm-container
-  #   networks:
-  #     - my-network
-  #   volumes:
-  #     - wordpress-files:/var/www/html
-  #   depends_on:
-  #     - mariadb
-  #   restart: always
-
   wordpress:
+    image: ${IMG_APP}
     build:
-      context: ./srcs/wordpress
-    container_name: wordpress-container
+      context: ./${APP}
+    container_name: ${CTNR_APP}
     # environment:
     #   DATABASE_URL: mysql://your_database_user:password@mariadb/your_database_name
     # ports:
@@ -47,42 +36,67 @@ services:
       # - front-net
       # - backend-net
     volumes:
-      - wordpress-files:/home/${USER}/data/wordpress
+      - type: bind
+        source: ${DATADIR}/${APP}
+        target: /var/www/html
+        # persistent: true
+        # permissions: rw
+      # - app-files:/var/www/html:rw
     env_file:
-      - ../.env
+      - ${ENVFILE}
     depends_on:
       - mariadb
     restart: always
 
   mariadb:
+    image: ${IMG_DB}
     build:
-      context: ./srcs/mariadb
-    container_name: mariadb-container
+      context: ./${DB}
+    container_name: ${CTNR_DB}
     # ports:
       # - "3306:3306"
     networks:
       - my-network
       # - backend-net
     volumes:
-      - wordpress-files:/home/${USER}/data/mariadb
+      - type: bind
+        source: ${DATADIR}/${DB}
+        target: /var/lib/mysql
+        # persistent: true
+        # permissions: rw
+      # - db-data:/var/lib/mysql:rw
     # environment:
     #   MYSQL_ROOT_PASSWORD: your_root_password
     #   MYSQL_DATABASE: your_database_name
     #   MYSQL_USER: your_database_user
     #   MYSQL_PASSWORD: your_database_password
     env_file:
-      - ../.env
+      - ${ENVFILE}
     restart: always
 
 networks:
   my-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.38.10.0/24
   # front-net:
   #   driver: bridge
   # backend-net:
   #   driver: bridge
 
-volumes:
-  wordpress-files:
-  nginx-conf:
-  mariadb-data:
+# volumes:
+#   app-files: ${DATADIR}/{APP}
+#   db-data: ${DATADIR}/${DB}
+  # sv-conf:
+# volumes:
+  # app-files:
+  #   driver: local
+  #   driver_opts:
+  #     type: bind
+  #     device: ${DATADIR}/${APP}
+  # db-data:
+  #   driver: local
+  #   driver_opts:
+  #     type: bind
+  #     device: ${DATADIR}/${DB}

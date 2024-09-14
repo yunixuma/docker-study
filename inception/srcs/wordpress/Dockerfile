@@ -1,7 +1,7 @@
 FROM debian:bullseye-slim
 
 # Install WordPress dependencies
-RUN apt-get update
+RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-fpm
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-phar
