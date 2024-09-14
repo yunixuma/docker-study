@@ -17,22 +17,24 @@ RUN rm -rf /var/lib/apt/lists/*
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
 # # Start PHP-FPM
-# CMD ["php-fpm7.4", "-F"]
+# ENTRYPOINT ["php-fpm7.4", "-F"]
 
 # Copy WordPress files
 # COPY . /var/www/html
 
-CMD ["which", "cat"]
-CMD ["which", "ls"]
-CMD ["cat", "/etc/os-release"]
-# CMD ["ls", "-l", "/var/log/"]
-CMD ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
-CMD ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
-# CMD ["tail", "-f", "/var/log/syslog"]
-# CMD ["cat", "/var/log/mysql/error.log"]
-# CMD ["cat", "/var/log/faillog"]
-# CMD ["cat", "/var/log/lastlog"]
-
 COPY ./nginx.conf /etc/nginx/
+RUN chmod -R 755 /var/www/html
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 80 443
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+ENTRYPOINT ["which", "cat"]
+ENTRYPOINT ["which", "ls"]
+ENTRYPOINT ["cat", "/etc/os-release"]
+# ENTRYPOINT ["ls", "-l", "/var/log/"]
+# ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
+# ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
+# ENTRYPOINT ["tail", "-f", "/var/log/syslog"]
+# ENTRYPOINT ["cat", "/var/log/mysql/error.log"]
+# ENTRYPOINT ["cat", "/var/log/faillog"]
+# ENTRYPOINT ["cat", "/var/log/lastlog"]

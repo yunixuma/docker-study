@@ -6,6 +6,7 @@ services:
     build:
       context: ./${SV}
     container_name: ${CTNR_SV}
+    hostname: ${SV}.${USER}.${DOMAIN}
     ports:
       # - "80:80"
       - "443:443"
@@ -26,6 +27,7 @@ services:
     build:
       context: ./${APP}
     container_name: ${CTNR_APP}
+    hostname: ${APP}.${USER}.${DOMAIN}
     # environment:
     #   DATABASE_URL: mysql://your_database_user:password@mariadb/your_database_name
     # ports:
@@ -53,6 +55,7 @@ services:
     build:
       context: ./${DB}
     container_name: ${CTNR_DB}
+    hostname: ${DB}.${USER}.${DOMAIN}
     # ports:
       # - "3306:3306"
     networks:

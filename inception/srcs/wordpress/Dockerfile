@@ -15,8 +15,22 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-ctype
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-zlib
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-openssl
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
+
+# Install WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+# Setup WordPress
+RUN cd /var/www/html
+RUN wp core download --path="/var/www/html" --allow-root
+# RUN wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" --dbhost="$WP_DB_HOST" --path="/var/www/html" --allow-root
+# RUN wp core install --url="$WP_HOME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --path="/var/www/html" --allow-root
+# RUN wp user create "$WP_SUB_USER" "$WP_SUB_EMAIL" --role=subscriber --user_pass="$WP_SUB_PASSWORD" --allow-root
+# RUN wp plugin install --activate --allow-root
+
 RUN rm -rf /var/lib/apt/lists/*
 
 # Configure PHP-FPM
@@ -26,11 +40,12 @@ RUN rm -rf /var/lib/apt/lists/*
 # Enable OpenSSL extension
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
-# Start PHP-FPM
-CMD ["php-fpm7.4", "-F"]
-
 # Copy WordPress files
+RUN chmod -R 755 /var/www/html
 COPY . /var/www/html
 
+# Start PHP-FPM
+ENTRYPOINT ["php-fpm7.4", "-F"]
+
 # Start the WordPress application
-CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]

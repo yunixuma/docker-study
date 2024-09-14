@@ -3,6 +3,7 @@ export SV		:= nginx
 export APP		:= wordpress
 export DB		:= mariadb
 export DATADIR	:= /home/${USER}/data
+export DOMAIN	:= 42.fr
 export ENVFILE	:= ../.env
 SRCDIR			:= ./srcs
 YAML			:= -f $(SRCDIR)/docker-compose.yml
@@ -15,6 +16,7 @@ export CTNR_SV	:= $(FIX_CTNR)_$(SV)
 export CTNR_APP	:= $(FIX_CTNR)_$(APP)
 export CTNR_DB	:= $(FIX_CTNR)_$(DB)
 
+all: up clean
 up: dir
 	docker compose $(YAML) up -d --build
 dir:
@@ -29,9 +31,9 @@ start:
 ls:
 	docker image ls
 	docker container ls
-	docker ps
 	docker compose $(YAML) ls
 	docker compose $(YAML) ps
+	docker ps
 login-sv:
 	docker exec -it $(CTNR_SV) /bin/sh
 login-app:
@@ -53,21 +55,22 @@ stop:
 	docker-compose $(YAML) stop
 down: stop
 	docker-compose $(YAML) down
-clean: stop
-	-docker compose $(YAML) down -v
-	-docker image ls | grep '<none>' | awk -F' ' 'NR>1 {print $3}' | xargs docker rmi --force
-	-docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
-	-docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
+clean:
+	-docker image ls | grep '<none>' | awk -F' ' '{print $$3}' | xargs --no-run-if-empty docker rmi --force
 fclean:
 	-docker compose $(YAML) down --rmi all --volumes --remove-orphans
-	-docker image ls | awk -F' ' 'NR>1 {print $3}' | xargs docker rmi
+	# -docker compose $(YAML) down -v
+	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
+	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
+	-rm -rf ./data
+purge:
+	-docker image ls | awk -F' ' 'NR>1 {print $3}' | xargs --no-run-if-empty docker rmi
 	-docker image prune -f
 	-docker system prune -f
 	-docker volume prune -f
 	-docker network prune -f
-	-rm -rf ./data
-re: clean build up
+re: fclean build up
 
 .PHONY: up build start stop down \
-		dir clean fclean re \
+		dir clean fclean re purge \
 		ls log login-sv login-app login-db log-sv log-app log-db
