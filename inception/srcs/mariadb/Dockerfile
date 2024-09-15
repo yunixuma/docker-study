@@ -19,11 +19,10 @@ EXPOSE 3306
 # Start MariaDB service
 ENTRYPOINT ["mysqld"]
 
-ENTRYPOINT ["which", "cat"]
-ENTRYPOINT ["which", "ls"]
-ENTRYPOINT ["cat", "/etc/os-release"]
+# ENTRYPOINT ["which", "cat"]
+# ENTRYPOINT ["which", "ls"]
+# ENTRYPOINT ["cat", "/etc/os-release"]
 # ENTRYPOINT ["ls", "-l", "/var/log/*log"]
-# ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
 # ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
 # ENTRYPOINT ["tail", "-f", "/var/log/syslog"]
 # ENTRYPOINT ["tail", "/var/log/nginx/error.log"]

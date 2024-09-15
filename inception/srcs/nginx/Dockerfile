@@ -28,11 +28,10 @@ RUN chmod -R 755 /var/www/html
 EXPOSE 80 443
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
-ENTRYPOINT ["which", "cat"]
-ENTRYPOINT ["which", "ls"]
-ENTRYPOINT ["cat", "/etc/os-release"]
+# ENTRYPOINT ["which", "cat"]
+# ENTRYPOINT ["which", "ls"]
+# ENTRYPOINT ["cat", "/etc/os-release"]
 # ENTRYPOINT ["ls", "-l", "/var/log/"]
-# ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
 # ENTRYPOINT ["ls", "-l", "/var/log/faillog", "/var/log/lastlog"]
 # ENTRYPOINT ["tail", "-f", "/var/log/syslog"]
 # ENTRYPOINT ["cat", "/var/log/mysql/error.log"]
