@@ -16,6 +16,8 @@ services:
       # - front-net
     # volumes:
       # - sv-conf: /etc/nginx/conf.d
+    environment:
+      TZ: ${TZ:-UTC}
     # env_file:
     #   - ${ENV_FILE}
     depends_on:
@@ -44,6 +46,8 @@ services:
         # persistent: true
         # permissions: rw
       # - app-files:/var/www/html:rw
+    environment:
+      TZ: ${TZ:-UTC}
     env_file:
       - ${ENVFILE}
     depends_on:
@@ -56,6 +60,7 @@ services:
       context: ./${DB}
     container_name: ${CTNR_DB}
     hostname: ${DB}.${USER}.${DOMAIN}
+    user: 1000:1000
     # ports:
       # - "3306:3306"
     networks:
@@ -68,7 +73,8 @@ services:
         # persistent: true
         # permissions: rw
       # - db-data:/var/lib/mysql:rw
-    # environment:
+    environment:
+      TZ: ${TZ:-UTC}
     #   MYSQL_ROOT_PASSWORD: your_root_password
     #   MYSQL_DATABASE: your_database_name
     #   MYSQL_USER: your_database_user

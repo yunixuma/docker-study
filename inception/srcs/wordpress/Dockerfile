@@ -1,6 +1,9 @@
+## Pull the base image
 FROM debian:bullseye-slim
+# FROM debian:bullseye
 
-# Install WordPress dependencies
+## Install WordPress dependencies
+# RUN ls -l /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-fpm
@@ -18,6 +21,7 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
+RUN rm -rf /var/lib/apt/lists/*
 
 # Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -31,8 +35,6 @@ RUN wp core download --path="/var/www/html" --allow-root
 # RUN wp user create "$WP_SUB_USER" "$WP_SUB_EMAIL" --role=subscriber --user_pass="$WP_SUB_PASSWORD" --allow-root
 # RUN wp plugin install --activate --allow-root
 
-RUN rm -rf /var/lib/apt/lists/*
-
 # Configure PHP-FPM
 # COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 # COPY www.conf /etc/php/7.4/fpm/pool.d/www.conf
@@ -40,12 +42,11 @@ RUN rm -rf /var/lib/apt/lists/*
 # Enable OpenSSL extension
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
-# Copy WordPress files
+## Prepare files & change Permissions
 RUN chmod -R 755 /var/www/html
 COPY . /var/www/html
 
 # Start PHP-FPM
 ENTRYPOINT ["php-fpm7.4", "-F"]
-
 # Start the WordPress application
 ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
