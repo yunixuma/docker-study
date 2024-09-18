@@ -34,6 +34,8 @@ ls:
 	docker compose $(YAML) ls
 	docker compose $(YAML) ps
 	docker ps
+config:
+	docker compose $(YAML) config
 login-sv:
 	docker exec -it $(CTNR_SV) /bin/sh
 login-app:
@@ -51,6 +53,8 @@ log-app:
 log-db:
 	docker inspect --format='{{.LogPath}}' $(CTNR_DB) | sudo xargs tail -f
 	# docker logs --tail 50 --follow --timestamps $(CTNR_DB)
+restart:
+	docker-compose $(YAML) restart
 stop:
 	docker-compose $(YAML) stop
 down: stop
@@ -71,6 +75,6 @@ purge:
 	-docker network prune -f
 re: fclean build up
 
-.PHONY: up build start stop down \
+.PHONY: up build start restart config stop down \
 		dir clean fclean re purge \
 		ls log login-sv login-app login-db log-sv log-app log-db

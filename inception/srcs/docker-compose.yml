@@ -8,7 +8,7 @@ services:
     container_name: ${CTNR_SV}
     hostname: ${SV}.${USER}.${DOMAIN}
     ports:
-      # - "80:80"
+      - "80:80"
       - "443:443"
       # - "9000:9000"
     networks:
@@ -22,6 +22,7 @@ services:
     #   - ${ENV_FILE}
     depends_on:
       - wordpress
+    tty: true
     restart: always
 
   wordpress:
@@ -52,6 +53,8 @@ services:
       - ${ENVFILE}
     depends_on:
       - mariadb
+      # condition: service_healthy
+    tty: true
     restart: always
 
   mariadb:
@@ -60,7 +63,7 @@ services:
       context: ./${DB}
     container_name: ${CTNR_DB}
     hostname: ${DB}.${USER}.${DOMAIN}
-    user: 1000:1000
+    # user: 1000:1000
     # ports:
       # - "3306:3306"
     networks:
@@ -81,6 +84,13 @@ services:
     #   MYSQL_PASSWORD: your_database_password
     env_file:
       - ${ENVFILE}
+    tty: true
+    # healthcheck:
+    #   test: ["CMD-SHELL", "mysql --user=user --password=password -e 'SELECT 1'"]
+    #   interval: 3s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 3s 
     restart: always
 
 networks:

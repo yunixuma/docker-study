@@ -15,9 +15,11 @@ RUN rm -rf /var/lib/apt/lists/*
 # COPY my.cnf /etc/mysql/
 RUN mkdir -p /var/lib/mysql
 RUN chown -hR mysql:mysql /var/lib/mysql
+RUN chmod 755 -R /var/lib/mysql/
 RUN mkdir -p /run/mysqld
 RUN chown -R mysql:mysql /run/mysqld
-# RUN chmod 755 -R /var/lib/mysql/
+RUN chmod 755 /run/mysqld
+RUN mysql_install_db --user=mysql --ldata=/var/lib/mysql
 
 ## Open network ports
 EXPOSE 3306
