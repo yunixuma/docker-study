@@ -42,6 +42,35 @@ login-app:
 	docker exec -it $(CTNR_APP) /bin/sh
 login-db:
 	docker exec -it $(CTNR_DB) /bin/sh
+info:
+	-docker compose $(YAML) top
+	-docker compose $(YAML) inspect
+	-docker compose $(YAML) events
+	-docker compose $(YAML) port
+	-docker compose $(YAML) ps
+	-docker compose $(YAML) stats
+	-docker compose $(YAML) images
+	-docker compose $(YAML) services
+	-docker compose $(YAML) networks
+	-docker compose $(YAML) volumes
+	-docker compose $(YAML) exec $(CTNR_SV) nginx -v
+	-docker compose $(YAML) exec $(CTNR_APP) wordpress -v
+	-docker compose $(YAML) exec $(CTNR_DB) mariadb -v
+	-docker compose $(YAML) exec $(CTNR_SV) nginx -V
+	-docker compose $(YAML) exec $(CTNR_APP) wordpress -V
+	-docker compose $(YAML) exec $(CTNR_DB) mariadb -V
+	-docker compose $(YAML) exec $(CTNR_SV) nginx -t
+	-docker compose $(YAML) exec $(CTNR_APP) wordpress -t
+	-docker compose $(YAML) exec $(CTNR_DB) mariadb -t
+	-docker compose $(YAML) exec $(CTNR_SV) nginx -T
+	-docker compose $(YAML) exec $(CTNR_APP) wordpress -T
+	-docker compose $(YAML) exec $(CTNR_DB) mariadb -T
+info-db:
+	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user, host FROM mysql.user;"
+	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | sort | uniq | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW CREATE USER name;"
+	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | sort | uniq | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW GRANTS FOR name;"
+	-docker exec -it $(CTNR_DB) mysql -u root -e "SHOW databases;"
+	-docker exec -it $(CTNR_DB) mysql -u root -e "SHOW databases;" | awk -F '|' 'NR>2 {print $$2}' | tr -d " |" | grep -v "^$$" | head -n 1 | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW tables FROM name;"
 log:
 	docker compose $(YAML) logs --tail 50 --follow --timestamps
 log-sv:

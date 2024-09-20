@@ -2,6 +2,20 @@
 FROM debian:bullseye-slim
 # FROM debian:bullseye
 
+## Args for building the image
+ARG WP_DB_NAME=$WP_DB_NAME
+ARG WP_DB_USER=$WP_DB_USER
+ARG WP_DB_PASSWORD=$WP_DB_PASSWORD
+ARG WP_DB_HOST=$WP_DB_HOST
+ARG WP_HOME=$WP_HOME
+ARG WP_TITLE=$WP_TITLE
+ARG WP_ADMIN_USER=$WP_ADMIN_USER
+ARG WP_ADMIN_PASSWORD=$WP_ADMIN_PASSWORD
+ARG WP_ADMIN_EMAIL=$WP_ADMIN_EMAIL
+ARG WP_SUB_USER=$WP_SUB_USER
+ARG WP_SUB_EMAIL=$WP_SUB_EMAIL
+ARG WP_SUB_PASSWORD=$WP_SUB_PASSWORD
+
 ## Install WordPress dependencies
 # RUN ls -l /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y
@@ -28,7 +42,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 # Setup WordPress
-RUN cd /var/www/html
+WORKDIR /var/www/html
 RUN wp core download --path="/var/www/html" --allow-root
 # RUN wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" --dbhost="$WP_DB_HOST" --path="/var/www/html" --allow-root
 # RUN wp core install --url="$WP_HOME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --path="/var/www/html" --allow-root
