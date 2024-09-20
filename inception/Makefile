@@ -15,6 +15,20 @@ export IMG_DB	:= $(FIX_IMG)_$(DB)
 export CTNR_SV	:= $(FIX_CTNR)_$(SV)
 export CTNR_APP	:= $(FIX_CTNR)_$(APP)
 export CTNR_DB	:= $(FIX_CTNR)_$(DB)
+include .env
+export MYSQL_ROOT_PASSWORD
+export WP_DB_NAME
+export WP_DB_USER
+export WP_DB_PASSWORD
+export WP_DB_HOST
+export WP_HOME
+export WP_TITLE
+export WP_ADMIN_USER
+export WP_ADMIN_PASSWORD
+export WP_ADMIN_EMAIL
+export WP_SUB_USER
+export WP_SUB_PASSWORD
+export WP_SUB_EMAIL
 
 all: up clean
 up: dir
@@ -66,11 +80,11 @@ info:
 	-docker compose $(YAML) exec $(CTNR_APP) wordpress -T
 	-docker compose $(YAML) exec $(CTNR_DB) mariadb -T
 info-db:
-	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user, host FROM mysql.user;"
-	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | sort | uniq | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW CREATE USER name;"
-	-docker exec -it $(CTNR_DB) mysql -u root -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | sort | uniq | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW GRANTS FOR name;"
-	-docker exec -it $(CTNR_DB) mysql -u root -e "SHOW databases;"
-	-docker exec -it $(CTNR_DB) mysql -u root -e "SHOW databases;" | awk -F '|' 'NR>2 {print $$2}' | tr -d " |" | grep -v "^$$" | head -n 1 | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root -e "SHOW tables FROM name;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user, host FROM mysql.user;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | head -n 1 | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW CREATE USER name;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2}' | tr -d " " | grep -v "^$$" | head -n 1 | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW GRANTS FOR name;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW databases;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW databases;" | awk -F '|' 'NR>2 {print $$2}' | tr -d " |" | grep -v "^$$" | head -n 1 | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW tables FROM name;"
 log:
 	docker compose $(YAML) logs --tail 50 --follow --timestamps
 log-sv:

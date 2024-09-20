@@ -29,6 +29,19 @@ services:
     image: ${IMG_APP}
     build:
       context: ./${APP}
+      args:
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USER: ${WP_DB_USER}
+        WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+        WP_DB_HOST: ${WP_DB_HOST}
+        WP_HOME: ${WP_HOME}
+        WP_TITLE: ${WP_TITLE}
+        WP_ADMIN_USER: ${WP_ADMIN_USER}
+        WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+        WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+        WP_SUB_USER: ${WP_SUB_USER}
+        WP_SUB_PASSWORD: ${WP_SUB_PASSWORD}
+        WP_SUB_EMAIL: ${WP_SUB_EMAIL}
     container_name: ${CTNR_APP}
     hostname: ${APP}.${USER}.${DOMAIN}
     # environment:
@@ -61,6 +74,12 @@ services:
     image: ${IMG_DB}
     build:
       context: ./${DB}
+      args:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USER: ${WP_DB_USER}
+        WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+        WP_DB_HOST: ${WP_DB_HOST}
     container_name: ${CTNR_DB}
     hostname: ${DB}.${USER}.${DOMAIN}
     # user: 1000:1000
