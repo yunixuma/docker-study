@@ -12,7 +12,8 @@ services:
       - "443:443"
       # - "9000:9000"
     networks:
-      - my-network
+      - my-network:
+        ipv4_address: 172.30.0.2
       # - front-net
     # volumes:
       # - sv-conf: /etc/nginx/conf.d
@@ -50,7 +51,8 @@ services:
       # - "9000:9000"
       # - "3389:3389"
     networks:
-      - my-network
+      - my-network:
+        ipv4_address: 172.30.0.3
       # - front-net
       # - backend-net
     volumes:
@@ -86,7 +88,8 @@ services:
     # ports:
       # - "3306:3306"
     networks:
-      - my-network
+      - my-network:
+        ipv4_address: 172.30.0.4
       # - backend-net
     volumes:
       - type: bind
@@ -116,8 +119,9 @@ networks:
   my-network:
     driver: bridge
     ipam:
+      driver: default
       config:
-        - subnet: 172.38.10.0/24
+        - subnet: 172.30.00.0/24
   # front-net:
   #   driver: bridge
   # backend-net:
