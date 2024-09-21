@@ -17,10 +17,10 @@ export CTNR_APP	:= $(FIX_CTNR)_$(APP)
 export CTNR_DB	:= $(FIX_CTNR)_$(DB)
 include .env
 export MYSQL_ROOT_PASSWORD
+export WP_DB_HOST	:= $(DB).$(USER).$(DOMAIN)
 export WP_DB_NAME
 export WP_DB_USER
 export WP_DB_PASSWORD
-export WP_DB_HOST	:= $(DB).$(USER).$(DOMAIN)
 export WP_HOME		:= http://$(APP).$(USER).$(DOMAIN)
 export WP_TITLE
 export WP_ADMIN_USER
