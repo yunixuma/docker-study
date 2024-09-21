@@ -29,14 +29,15 @@ RUN chown -R mysql:mysql /run/mysqld
 RUN chmod 755 /run/mysqld
 
 COPY entrypoint.sh /entrypoint.sh
-RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sh
+COPY entrypoint.sql /entrypoint.sql
+RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" /entrypoint.sql
+RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /entrypoint.sql
+RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sql
+RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sql
+RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sql
 RUN chmod +x /entrypoint.sh
 RUN sh /entrypoint.sh
-# COPY entrypoint.sh /entrypoint.sh
+# COPY entrypoint.sql /entrypoint.sql
 
 # RUN service mariadb start
 # RUN mysql_install_db --user=mysql --ldata=/var/lib/mysql
