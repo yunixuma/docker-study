@@ -21,7 +21,7 @@ export WP_DB_HOST	:= $(DB).$(USER).$(DOMAIN)
 export WP_DB_NAME
 export WP_DB_USER
 export WP_DB_PASSWORD
-export WP_HOME		:= http://$(APP).$(USER).$(DOMAIN)
+export WP_HOME		:= $(APP).$(USER).$(DOMAIN)
 export WP_TITLE
 export WP_ADMIN_USER
 export WP_ADMIN_PASSWORD
