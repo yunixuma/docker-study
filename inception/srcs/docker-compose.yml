@@ -66,9 +66,9 @@ services:
       TZ: ${TZ:-UTC}
     env_file:
       - ${ENVFILE}
-    depends_on:
-      mariadb:
-        condition: service_healthy
+    # depends_on:
+    #   mariadb:
+        # condition: service_healthy
     tty: true
     restart: always
 
@@ -120,11 +120,12 @@ services:
 
 networks:
   my-network:
+    # name: ${NW}/
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.30.00.0/24
+        - subnet: 172.30.0.0/24
   # front-net:
   #   driver: bridge
   # backend-net:

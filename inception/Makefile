@@ -7,14 +7,19 @@ export DOMAIN	:= 42.fr
 export ENVFILE	:= ../.env
 SRCDIR			:= ./srcs
 YAML			:= -f $(SRCDIR)/docker-compose.yml
-FIX_IMG			:= incep-img
-FIX_CTNR		:= incep-ctnr
+FIX_PJ			:= incep
+FIX_IMG			:= $(FIX_PJ)-img
+FIX_CTNR		:= $(FIX_PJ)-ctnr
+FIX_VOL			:= $(FIX_PJ)-vol
+export NW		:= $(FIX_PJ)-nw
 export IMG_SV	:= $(FIX_IMG)_$(SV)
 export IMG_APP	:= $(FIX_IMG)_$(APP)
 export IMG_DB	:= $(FIX_IMG)_$(DB)
 export CTNR_SV	:= $(FIX_CTNR)_$(SV)
 export CTNR_APP	:= $(FIX_CTNR)_$(APP)
 export CTNR_DB	:= $(FIX_CTNR)_$(DB)
+export VOL_APP	:= $(FIX_VOL)_$(APP)
+export VOL_DB	:= $(FIX_VOL)_$(DB)
 include .env
 export MYSQL_ROOT_PASSWORD
 export WP_DB_HOST	:= $(DB).$(USER).$(DOMAIN)
@@ -45,6 +50,8 @@ start:
 ls:
 	docker image ls
 	docker container ls
+	docker volume ls
+	docker network ls
 	docker compose $(YAML) ls
 	docker compose $(YAML) ps
 	docker ps
@@ -95,10 +102,10 @@ log-app:
 	# docker logs --tail 50 --follow --timestamps $(CTNR_APP)
 log-db:
 	docker inspect --format='{{.LogPath}}' $(CTNR_DB) | sudo xargs tail -f
-	# docker logs --tail 50 --follow --timestamps $(CTNR_DB)
+	# docker logs --tail 50 --fstart
+stop:ollow --timestamps $(CTNR_DB)
 restart:
-	docker-compose $(YAML) restart
-stop:
+	docker-compose $(YAML) re
 	docker-compose $(YAML) stop
 down: stop
 	docker-compose $(YAML) down
@@ -106,7 +113,8 @@ clean:
 	-docker image ls | grep '<none>' | awk -F' ' '{print $$3}' | xargs --no-run-if-empty docker rmi --force
 fclean:
 	-docker compose $(YAML) down --rmi all --volumes --remove-orphans
-	# -docker compose $(YAML) down -v
+	# -docker compose $(YAML) down -
+	-docker network rm $(NW)
 	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	-rm -rf ./data

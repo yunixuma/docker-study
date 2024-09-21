@@ -37,6 +37,9 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
 RUN rm -rf /var/lib/apt/lists/*
 
+## Prepare files & change Permissions
+RUN chmod -R 755 /var/www/html
+
 # Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
@@ -65,10 +68,6 @@ RUN sh /entrypoint.sh
 
 # Enable OpenSSL extension
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
-
-## Prepare files & change Permissions
-RUN chmod -R 755 /var/www/html
-COPY . /var/www/html
 
 # Start PHP-FPM
 ENTRYPOINT ["php-fpm7.4", "-F"]
