@@ -12,7 +12,7 @@ services:
       - "443:443"
       # - "9000:9000"
     networks:
-      - my-network:
+      my-network:
         ipv4_address: 172.30.0.2
       # - front-net
     # volumes:
@@ -51,7 +51,7 @@ services:
       # - "9000:9000"
       # - "3389:3389"
     networks:
-      - my-network:
+      my-network:
         ipv4_address: 172.30.0.3
       # - front-net
       # - backend-net
@@ -67,8 +67,8 @@ services:
     env_file:
       - ${ENVFILE}
     depends_on:
-      - mariadb
-      # condition: service_healthy
+      mariadb:
+        condition: service_healthy
     tty: true
     restart: always
 
@@ -88,7 +88,7 @@ services:
     # ports:
       # - "3306:3306"
     networks:
-      - my-network:
+      my-network:
         ipv4_address: 172.30.0.4
       # - backend-net
     volumes:
@@ -107,8 +107,11 @@ services:
     env_file:
       - ${ENVFILE}
     tty: true
-    # healthcheck:
-    #   test: ["CMD-SHELL", "mysql --user=user --password=password -e 'SELECT 1'"]
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h localhost -u $$WP_DB_USER --password=$$WP_DB_PASSWORD -e 'SELECT 1'"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
     #   interval: 3s
     #   timeout: 10s
     #   retries: 3

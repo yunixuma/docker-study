@@ -42,12 +42,22 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 # Setup WordPress
-WORKDIR /var/www/html
-RUN wp core download --path="/var/www/html" --allow-root
-RUN wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" --dbhost="$WP_DB_HOST" --path="/var/www/html" --allow-root
-RUN wp core install --url="$WP_HOME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --path="/var/www/html" --allow-root
-RUN wp user create "$WP_SUB_USER" "$WP_SUB_EMAIL" --role=subscriber --user_pass="$WP_SUB_PASSWORD" --allow-root
-# RUN wp plugin install --activate --allow-root
+COPY entrypoint.sh /entrypoint.sh
+RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /entrypoint.sh
+RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sh
+RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sh
+RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sh
+RUN sed -i "s/\$WP_HOME/$WP_HOME/g" /entrypoint.sh
+RUN sed -i "s/\$WP_TITLE/$WP_TITLE/g" /entrypoint.sh
+RUN sed -i "s/\$WP_ADMIN_USER/$WP_ADMIN_USER/g" /entrypoint.sh
+RUN sed -i "s/\$WP_ADMIN_PASSWORD/$WP_ADMIN_PASSWORD/g" /entrypoint.sh
+RUN sed -i "s/\$WP_ADMIN_EMAIL/$WP_ADMIN_EMAIL/g" /entrypoint.sh
+RUN sed -i "s/\$WP_SUB_USER/$WP_SUB_USER/g" /entrypoint.sh
+RUN sed -i "s/\$WP_SUB_EMAIL/$WP_SUB_EMAIL/g" /entrypoint.sh
+RUN sed -i "s/\$WP_SUB_PASSWORD/$WP_SUB_PASSWORD/g" /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN sh /entrypoint.sh
+# COPY entrypoint.sh /entrypoint.sh
 
 # Configure PHP-FPM
 # COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
