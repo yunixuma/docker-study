@@ -6,11 +6,11 @@ mysqld_safe &
 # mysql -u root; 
 # truncate table user;
 # flush privileges;
-# grant all privileges on *.* to root@localhost identified by '$WP_ADMIN_PASSWORD' with grant option;
+# grant all privileges on *.* to root@localhost identified by '$MYSQL_ROOT_PASSWORD' with grant option;
 # flush privileges;
 # # quit;
 mysql -u root;
-ALTER USER 'root'@'localhost' IDENTIFIED BY $MYSQL_ROOT_PASSWORD;
+ALTER USER 'root'@'$WP_DB_HOST' IDENTIFIED BY $MYSQL_ROOT_PASSWORD;
 # SET PASSWORD = $MYSQL_ROOT_PASSWORD;
 CREATE DATABASE $WP_DB_NAME;
 CREATE USER '$WP_DB_USER'@'$WP_DB_HOST' IDENTIFIED BY '$WP_DB_PASSWORD';
