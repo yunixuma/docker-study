@@ -38,6 +38,12 @@ export WP_SUB_EMAIL
 all: up clean
 up: dir
 	docker compose $(YAML) up -d --build
+up-sv:
+	docker compose $(YAML) up $(SV) -d --build
+up-app:
+	docker compose $(YAML) up $(APP) -d --build
+up-db:
+	docker compose $(YAML) up $(DB) -d --build
 dir:
 	-mkdir -p $(DATADIR)
 	-mkdir -p $(DATADIR)/$(APP)
@@ -102,18 +108,18 @@ log-app:
 	# docker logs --tail 50 --follow --timestamps $(CTNR_APP)
 log-db:
 	docker inspect --format='{{.LogPath}}' $(CTNR_DB) | sudo xargs tail -f
-	# docker logs --tail 50 --fstart
-stop:ollow --timestamps $(CTNR_DB)
-restart:
-	docker-compose $(YAML) re
+	# docker logs --tail 50 --follow --timestamps $(CTNR_DB)
+stop:
 	docker-compose $(YAML) stop
+restart:
+	docker-compose $(YAML) restart
 down: stop
-	docker-compose $(YAML) down
+	docker-compose $(YAML) down -v
 clean:
 	-docker image ls | grep '<none>' | awk -F' ' '{print $$3}' | xargs --no-run-if-empty docker rmi --force
 fclean:
 	-docker compose $(YAML) down --rmi all --volumes --remove-orphans
-	# -docker compose $(YAML) down -
+	# -docker compose $(YAML) down -v
 	-docker network rm $(NW)
 	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
