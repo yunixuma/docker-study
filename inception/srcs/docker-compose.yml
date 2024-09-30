@@ -13,7 +13,7 @@ services:
       # - "9000:9000"
     networks:
       my-network:
-        ipv4_address: 172.30.0.2
+        ipv4_address: ${IP_SV}
       # - front-net
     # volumes:
       # - sv-conf: /etc/nginx/conf.d
@@ -52,7 +52,7 @@ services:
       # - "3389:3389"
     networks:
       my-network:
-        ipv4_address: 172.30.0.3
+        ipv4_address: ${IP_APP}
       # - front-net
       # - backend-net
     volumes:
@@ -82,6 +82,7 @@ services:
         WP_DB_NAME: ${WP_DB_NAME}
         WP_DB_USER: ${WP_DB_USER}
         WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+        # IP_DB: ${IP_DB}
     container_name: ${CTNR_DB}
     hostname: ${DB}.${USER}.${DOMAIN}
     # user: 1000:1000
@@ -89,7 +90,7 @@ services:
       # - "3306:3306"
     networks:
       my-network:
-        ipv4_address: 172.30.0.4
+        ipv4_address: ${IP_DB}
       # - backend-net
     volumes:
       - type: bind
@@ -125,7 +126,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.30.0.0/24
+        - subnet: ${IP_SUBNET}
   # front-net:
   #   driver: bridge
   # backend-net:

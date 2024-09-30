@@ -15,7 +15,9 @@ RUN rm -rf /var/lib/apt/lists/*
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
 ## Prepare files & change Permissions
-COPY ./nginx.conf /etc/nginx/
+COPY ./default.conf /etc/nginx/conf.d/
+COPY ./ssl/server.crt /etc/ssl/certs/nginx.crt
+COPY ./ssl/server.key /etc/ssl/private/nginx.key
 RUN chmod -R 755 /var/www/html
 
 ## Open network ports

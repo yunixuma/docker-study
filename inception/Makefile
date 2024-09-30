@@ -1,4 +1,4 @@
-NAME			:= inception
+NAME			:= Inception
 export SV		:= nginx
 export APP		:= wordpress
 export DB		:= mariadb
@@ -11,6 +11,10 @@ FIX_PJ			:= incep
 FIX_IMG			:= $(FIX_PJ)-img
 FIX_CTNR		:= $(FIX_PJ)-ctnr
 FIX_VOL			:= $(FIX_PJ)-vol
+CERT_DIR		:= $(SRCDIR)/nginx/ssl
+KEY_PATH		:= $(CERT_DIR)/server.key
+CSR_PATH		:= $(CERT_DIR)/server.csr
+CERT_PATH		:= $(CERT_DIR)/server.crt
 export NW		:= $(FIX_PJ)-nw
 export IMG_SV	:= $(FIX_IMG)_$(SV)
 export IMG_APP	:= $(FIX_IMG)_$(APP)
@@ -34,9 +38,13 @@ export WP_ADMIN_EMAIL
 export WP_SUB_USER
 export WP_SUB_PASSWORD
 export WP_SUB_EMAIL
+export IP_SUBNET	:= 172.30.0.0/24
+export IP_SV		:= 172.30.0.2
+export IP_APP		:= 172.30.0.3
+export IP_DB		:= 172.30.0.4
 
 all: up clean
-up: dir
+up: dir cert
 	docker compose $(YAML) up -d --build
 up-sv:
 	docker compose $(YAML) up $(SV) -d --build
@@ -48,6 +56,25 @@ dir:
 	-mkdir -p $(DATADIR)
 	-mkdir -p $(DATADIR)/$(APP)
 	-mkdir -p $(DATADIR)/$(DB)
+$(CERT_DIR):
+	mkdir -p $(CERT_DIR)
+cert: $(CERT_DIR)
+ifeq ("$(wildcard $(KEY_PATH))", "")
+	openssl genrsa -out $(KEY_PATH) 2048
+	openssl req \
+		-new \
+		-newkey rsa:2048 \
+		-days 365 \
+		-nodes \
+		-x509 \
+		-subj "/C=FR/ST=Paris/L=boulevard Bessières/O=$(NAME)/CN=$(WP_HOME)" \
+		-keyout $(KEY_PATH) \
+		-out $(CERT_PATH)
+	# openssl x509 -req -days 365 -in $(CSR_PATH) -signkey $(KEY_PATH) -out $(CERT_PATH)
+endif
+del_cert:
+	-rm $(KEY_PATH) $(CSR_PATH) $(CERT_PATH)
+
 build: dir
 	-docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	docker compose $(YAML) build --no-cache
@@ -117,14 +144,14 @@ down: stop
 	docker-compose $(YAML) down -v
 clean:
 	-docker image ls | grep '<none>' | awk -F' ' '{print $$3}' | xargs --no-run-if-empty docker rmi --force
-fclean:
+fclean: del_cert
 	-docker compose $(YAML) down --rmi all --volumes --remove-orphans
 	# -docker compose $(YAML) down -v
 	-docker network rm $(NW)
 	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	-rm -rf ./data
-purge:
+purge: fclean
 	-docker container ls | awk -F' ' 'NR>1 {print $$1}' | xargs --no-run-if-empty docker rm -f 
 	-docker volume ls | awk -F' ' 'NR>1 {print $$2}' | xargs --no-run-if-empty docker volume rm
 	-docker image ls | awk -F' ' 'NR>1 {print $$3}' | xargs --no-run-if-empty docker rmi
@@ -135,5 +162,6 @@ purge:
 re: fclean build up
 
 .PHONY: up build start restart config stop down \
-		dir clean fclean re purge \
-		ls log login-sv login-app login-db log-sv log-app log-db
+		dir clean fclean re purge cert del_cert \
+		ls info info-db log log-sv log-app log-db \
+		login-sv login-app login-db \
