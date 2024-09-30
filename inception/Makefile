@@ -125,7 +125,7 @@ fclean:
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	-rm -rf ./data
 purge:
-	-docker container ls | awk -F' ' 'NR>1 {print $$1}' | xargs --no-run-if-empty docker stop
+	-docker container ls | awk -F' ' 'NR>1 {print $$1}' | xargs --no-run-if-empty docker rm -f 
 	-docker volume ls | awk -F' ' 'NR>1 {print $$2}' | xargs --no-run-if-empty docker volume rm
 	-docker image ls | awk -F' ' 'NR>1 {print $$3}' | xargs --no-run-if-empty docker rmi
 	-docker volume prune -f

@@ -35,6 +35,11 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
+
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 ## Prepare files & change Permissions

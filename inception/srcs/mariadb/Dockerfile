@@ -17,6 +17,11 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-common
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes tzdata
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
+
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 ## Prepare files & change Permissions
@@ -36,7 +41,7 @@ RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sql
 RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sql
 RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sql
 RUN chmod +x /entrypoint.sh
-RUN sh /entrypoint.sh
+RUN sh /entrypoint.sh; exit 0 
 # COPY entrypoint.sql /entrypoint.sql
 
 # RUN service mariadb start
