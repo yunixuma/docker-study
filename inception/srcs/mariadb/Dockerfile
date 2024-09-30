@@ -55,7 +55,7 @@ RUN sh /entrypoint.sh; exit 0
 ## Open network ports
 EXPOSE 3306
 ## Start MariaDB service
-ENTRYPOINT ["mysqld_safe", "--user=$WP_DB_USER"]
+# ENTRYPOINT ["mysqld_safe", "--user=$WP_DB_USER"]
 
 
 ## Debugging

@@ -7,6 +7,7 @@ services:
       context: ./${SV}
     container_name: ${CTNR_SV}
     hostname: ${SV}.${USER}.${DOMAIN}
+    init: true
     ports:
       - "80:80"
       - "443:443"
@@ -45,6 +46,7 @@ services:
         WP_SUB_EMAIL: ${WP_SUB_EMAIL}
     container_name: ${CTNR_APP}
     hostname: ${APP}.${USER}.${DOMAIN}
+    init: true
     # environment:
     #   DATABASE_URL: mysql://your_database_user:password@mariadb/your_database_name
     # ports:
@@ -85,6 +87,7 @@ services:
         # IP_DB: ${IP_DB}
     container_name: ${CTNR_DB}
     hostname: ${DB}.${USER}.${DOMAIN}
+    init: true
     # user: 1000:1000
     # ports:
       # - "3306:3306"

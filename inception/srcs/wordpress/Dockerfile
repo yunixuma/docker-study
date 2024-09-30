@@ -48,6 +48,10 @@ RUN mkdir -p /run/php/
 RUN chmod 755 -R /run/php/
 RUN chmod -R 755 /var/www/html
 
+# Configure PHP-FPM
+# COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
+# COPY www.conf /etc/php/7.4/fpm/pool.d/www.conf
+
 # Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
@@ -70,14 +74,13 @@ RUN chmod +x /entrypoint.sh
 RUN sh /entrypoint.sh; exit 0
 # COPY entrypoint.sh /entrypoint.sh
 
-# Configure PHP-FPM
-# COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
-# COPY www.conf /etc/php/7.4/fpm/pool.d/www.conf
-
 # Enable OpenSSL extension
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
+
+## Open network ports
+EXPOSE 3306
 
 # Start PHP-FPM
 ENTRYPOINT ["php-fpm7.4", "-F"]
 # Start the WordPress application
-ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+ENTRYPOINT ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]

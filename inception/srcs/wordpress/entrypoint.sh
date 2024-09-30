@@ -1,5 +1,6 @@
 #!/bin/bash
-sed -i "/\/run\/php\/php7.4-fpm.sock/9000/" /etc/php/7.4/fpm/pool.d/www.conf
+PATH_CONF='/etc/php/7.4/fpm/pool.d/www.conf'
+sed -i "s/\/run\/php\/php7.4-fpm.sock/nginx:9000/" $PATH_CONF
 cd /var/www/html
 # mysql -u $WP_DB_USER --password=$WP_DB_PASSWORD --host $WP_DB_HOST --connect-timeout 300
 wp core download --path="/var/www/html" --allow-root
