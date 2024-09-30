@@ -26,6 +26,10 @@ COPY ./ssl/server.crt /etc/ssl/certs/nginx.crt
 COPY ./ssl/server.key /etc/ssl/private/nginx.key
 RUN chmod -R 755 /var/www/html
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN sh /entrypoint.sh; exit 0
+
 ## Open network ports
 EXPOSE 80 443
 ## Start nginx service

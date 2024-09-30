@@ -150,7 +150,7 @@ fclean: del_cert
 	-docker network rm $(NW)
 	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
-	-rm -rf ./data
+	-rm -rf /home/${USER}/data
 purge: fclean
 	-docker container ls | awk -F' ' 'NR>1 {print $$1}' | xargs --no-run-if-empty docker rm -f 
 	-docker volume ls | awk -F' ' 'NR>1 {print $$2}' | xargs --no-run-if-empty docker volume rm

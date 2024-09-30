@@ -80,7 +80,7 @@ RUN sh /entrypoint.sh; exit 0
 ## Open network ports
 EXPOSE 3306
 
+# Start the WordPress application
+CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
 # Start PHP-FPM
 ENTRYPOINT ["php-fpm7.4", "-F"]
-# Start the WordPress application
-ENTRYPOINT ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
