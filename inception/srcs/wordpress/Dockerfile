@@ -37,12 +37,15 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
 
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 ## Prepare files & change Permissions
+RUN mkdir -p /run/php/
+RUN chmod 755 -R /run/php/
 RUN chmod -R 755 /var/www/html
 
 # Install WP-CLI
@@ -64,7 +67,7 @@ RUN sed -i "s/\$WP_SUB_USER/$WP_SUB_USER/g" /entrypoint.sh
 RUN sed -i "s/\$WP_SUB_EMAIL/$WP_SUB_EMAIL/g" /entrypoint.sh
 RUN sed -i "s/\$WP_SUB_PASSWORD/$WP_SUB_PASSWORD/g" /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-RUN sh /entrypoint.sh
+RUN sh /entrypoint.sh; exit 0
 # COPY entrypoint.sh /entrypoint.sh
 
 # Configure PHP-FPM
