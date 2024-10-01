@@ -57,7 +57,7 @@ vol:
 	-mkdir -p $(DATADIR)/$(APP)
 	-mkdir -p $(DATADIR)/$(DB)
 del_vol:
-	-sudo rm -rf $(DATADIR)/$(DB)
+	-sudo rm -rf $(DATADIR)/$(APP) $(DATADIR)/$(DB)
 	-rm -rf $(DATADIR)
 $(CERT_DIR):
 	-mkdir -p $(CERT_DIR)

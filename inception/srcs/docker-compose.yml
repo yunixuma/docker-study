@@ -23,7 +23,8 @@ services:
     # env_file:
     #   - ${ENV_FILE}
     depends_on:
-      - wordpress
+      wordpress:
+        condition: service_healthy
     tty: true
     restart: unless-stopped
 
@@ -68,10 +69,16 @@ services:
       TZ: ${TZ:-UTC}
     env_file:
       - ${ENVFILE}
-    # depends_on:
-    #   mariadb:
-    #     condition: service_healthy
+    depends_on:
+      mariadb:
+        condition: service_healthy
     tty: true
+    healthcheck:
+      test: ["CMD-SHELL", "ls -b /var/www/html/* | grep -q .php"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+      # start_period: 3s 
     restart: unless-stopped
 
   mariadb:
@@ -116,10 +123,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
-    #   interval: 3s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 3s 
+      # start_period: 3s 
     restart: unless-stopped
 
 networks:
