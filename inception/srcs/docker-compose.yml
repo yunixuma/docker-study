@@ -16,8 +16,8 @@ services:
       my-network:
         ipv4_address: ${IP_SV}
       # - front-net
-    # volumes:
-      # - sv-conf: /etc/nginx/conf.d
+    volumes:
+      - wordpress_data:/var/www/html
     environment:
       TZ: ${TZ:-UTC}
     # env_file:
@@ -59,9 +59,10 @@ services:
       # - front-net
       # - backend-net
     volumes:
-      - type: bind
-        source: ${DATADIR}/${APP}
-        target: /var/www/html
+      - wordpress_data:/var/www/html
+      # - type: bind
+      #   source: ${DATADIR}/${APP}
+      #   target: /var/www/html
         # persistent: true
         # permissions: rw
       # - app-files:/var/www/html:rw
@@ -103,9 +104,10 @@ services:
         ipv4_address: ${IP_DB}
       # - backend-net
     volumes:
-      - type: bind
-        source: ${DATADIR}/${DB}
-        target: /var/lib/mysql
+      - mariadb_data:/var/lib/mysql
+      # - type: bind
+      #   source: ${DATADIR}/${DB}
+      #   target: /var/lib/mysql
         # persistent: true
         # permissions: rw
       # - db-data:/var/lib/mysql:rw
@@ -128,7 +130,7 @@ services:
 
 networks:
   my-network:
-    # name: ${NW}/
+    # name: ${NW}
     driver: bridge
     ipam:
       driver: default
@@ -143,14 +145,16 @@ networks:
 #   app-files: ${DATADIR}/{APP}
 #   db-data: ${DATADIR}/${DB}
   # sv-conf:
-# volumes:
-  # app-files:
-  #   driver: local
-  #   driver_opts:
-  #     type: bind
-  #     device: ${DATADIR}/${APP}
-  # db-data:
-  #   driver: local
-  #   driver_opts:
-  #     type: bind
-  #     device: ${DATADIR}/${DB}
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATADIR}/${APP}
+      o: bind
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DATADIR}/${DB}
+      o: bind
