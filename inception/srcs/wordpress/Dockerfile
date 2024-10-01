@@ -48,39 +48,40 @@ RUN mkdir -p /run/php/
 RUN chmod 755 -R /run/php/
 RUN chmod -R 755 /var/www/html
 
-# Configure PHP-FPM
+## Configure PHP-FPM
 # COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 # COPY www.conf /etc/php/7.4/fpm/pool.d/www.conf
+ARG PATH_CONF='/etc/php/7.4/fpm/pool.d/www.conf'
+RUN sed -i "s/\/run\/php\/php7.4-fpm.sock/9000/" $PATH_CONF
 
-# Install WP-CLI
+## Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
-# Setup WordPress
-COPY entrypoint.sh /entrypoint.sh
-RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sh
-RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sh
-RUN sed -i "s/\$WP_HOME/$WP_HOME/g" /entrypoint.sh
-RUN sed -i "s/\$WP_TITLE/$WP_TITLE/g" /entrypoint.sh
-RUN sed -i "s/\$WP_ADMIN_USER/$WP_ADMIN_USER/g" /entrypoint.sh
-RUN sed -i "s/\$WP_ADMIN_PASSWORD/$WP_ADMIN_PASSWORD/g" /entrypoint.sh
-RUN sed -i "s/\$WP_ADMIN_EMAIL/$WP_ADMIN_EMAIL/g" /entrypoint.sh
-RUN sed -i "s/\$WP_SUB_USER/$WP_SUB_USER/g" /entrypoint.sh
-RUN sed -i "s/\$WP_SUB_EMAIL/$WP_SUB_EMAIL/g" /entrypoint.sh
-RUN sed -i "s/\$WP_SUB_PASSWORD/$WP_SUB_PASSWORD/g" /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-RUN sh /entrypoint.sh; exit 0
-# COPY entrypoint.sh /entrypoint.sh
 
-# Enable OpenSSL extension
+# COPY setup.sh /setup.sh
+# RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /setup.sh
+# RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /setup.sh
+# RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /setup.sh
+# RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /setup.sh
+# RUN sed -i "s/\$WP_HOME/$WP_HOME/g" /setup.sh
+# RUN sed -i "s/\$WP_TITLE/$WP_TITLE/g" /setup.sh
+# RUN sed -i "s/\$WP_ADMIN_USER/$WP_ADMIN_USER/g" /setup.sh
+# RUN sed -i "s/\$WP_ADMIN_PASSWORD/$WP_ADMIN_PASSWORD/g" /setup.sh
+# RUN sed -i "s/\$WP_ADMIN_EMAIL/$WP_ADMIN_EMAIL/g" /setup.sh
+# RUN sed -i "s/\$WP_SUB_USER/$WP_SUB_USER/g" /setup.sh
+# RUN sed -i "s/\$WP_SUB_EMAIL/$WP_SUB_EMAIL/g" /setup.sh
+# RUN sed -i "s/\$WP_SUB_PASSWORD/$WP_SUB_PASSWORD/g" /setup.sh
+
+## Enable OpenSSL extension
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
 ## Open network ports
-EXPOSE 3306
+# EXPOSE 3306
 
-# Start the WordPress application
-CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
-# Start PHP-FPM
-ENTRYPOINT ["php-fpm7.4", "-F"]
+## Setup & start the WordPress application
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
+# CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
+# CMD ["php-fpm7.4", "-F"]

@@ -1,16 +1,22 @@
 #!/bin/bash
-PATH_CONF='/etc/mysql/mariadb.conf.d/50-server.cnf'
-cd '/usr'
-grep "bind-address[ \t]*=[ \t]*$WP_DB_HOST" $PATH_CONF || sed -i "/\(bind-address.*$\)/a bind-address            = $WP_DB_HOST" $PATH_CONF 
-# sed -i "/\(bind-address.*$\)/a bind-address            = $IP_DB" $PATH_CONF 
-# mysql_install_db --user=mysql --ldata=/var/lib/mysql || mysql_upgrade -u root --password=$MYSQL_ROOT_PASSWORD
-mysql_install_db --user=mysql --ldata=/var/lib/mysql
+# mkdir -p /var/lib/mysql
+# chown -hR 101:101 /var/lib/mysql
+# chmod 777 -R /var/lib/mysql/
+
+PATH_DB=/var/lib/mysql
+PATH_LOG=~/entrypoint.log
+
+cd /usr
+mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&1 \
+    || mysql_upgrade -u root --password=$MYSQL_ROOT_PASSWORD >> $PATH_LOG 2>&1
+
 # mysqld_safe --skip-grant-tables &
 # mysqld_safe &
-/usr/bin/mariadbd-safe --datadir='/var/lib/mysql' &
-# service mariadb start
+# mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
+service mariadb start
 
-mysql -u root < /entrypoint.sql
+mysql -u root < /root/setup.sql >> $PATH_LOG 2>&1
 
 # pkill mysqld
 # service mariadb stop
+tail -f /dev/null

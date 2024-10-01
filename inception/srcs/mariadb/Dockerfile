@@ -24,38 +24,37 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
+## Debugging
+# RUN ls -al /var/lib/mysql >> ~/install.log 2>&1
+# RUN whoami >> ~/install.log 2>&1
+# RUN cat /etc/passwd >> ~/install.log 2>&1
+
 ## Prepare files & change Permissions
 # COPY my.cnf /etc/mysql/
-RUN mkdir -p /var/lib/mysql
-RUN chown -hR mysql:mysql /var/lib/mysql
-RUN chmod 755 -R /var/lib/mysql/
 RUN mkdir -p /run/mysqld
 RUN chown -R mysql:mysql /run/mysqld
 RUN chmod 755 /run/mysqld
+COPY ./setup.sql /root/setup.sql
+RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" /root/setup.sql
+RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /root/setup.sql
+RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /root/setup.sql
+RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /root/setup.sql
+RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /root/setup.sql
 
-COPY entrypoint.sh /entrypoint.sh
-COPY entrypoint.sql /entrypoint.sql
-RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" /entrypoint.sql
-RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /entrypoint.sql
-RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /entrypoint.sql
-RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /entrypoint.sql
-RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /entrypoint.sql
-RUN chmod +x /entrypoint.sh
-RUN sh /entrypoint.sh; exit 0 
-# COPY entrypoint.sql /entrypoint.sql
-
-# RUN service mariadb start
-# RUN mysql_install_db --user=mysql --ldata=/var/lib/mysql
-# RUN mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY $MYSQL_ROOT_PASSWORD;"
-# RUN mysql -u root -e "SET PASSWORD = $MYSQL_ROOT_PASSWORD;"
-# RUN mysql -u root -e "CREATE DATABASE $WP_DB_NAME;"
-# RUN mysql -u root -e "CREATE USER '$WP_DB_USER'@'$WP_DB_HOST' IDENTIFIED BY '$WP_DB_PASSWORD';"
-# RUN mysql -u root -e "GRANT ALL PRIVILEGES ON $WP_DB_NAME.* TO '$WP_DB_USER'@'$WP_DB_HOST';"
+## Configure MariaDB
+ARG PATH_CONF=/etc/mysql/mariadb.conf.d/50-server.cnf
+RUN grep "bind-address[ \t]*=[ \t]*$WP_DB_HOST" $PATH_CONF || sed -i "/\(bind-address.*$\)/a bind-address            = $WP_DB_HOST" $PATH_CONF
+# sed -i "/\(bind-address.*$\)/a bind-address            = $IP_DB" $PATH_CONF 
 
 ## Open network ports
 EXPOSE 3306
-## Start MariaDB service
-ENTRYPOINT ["mysqld_safe", "--user=$WP_DB_USER"]
+
+## Execute entrypoint.sh script
+COPY entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
+## Setup & start MariaDB service
+ENTRYPOINT [ "sh", "-c", "/root/entrypoint.sh"] 
+# CMD ["mysqld_safe", "--user=$WP_DB_USER"]
 
 
 ## Debugging

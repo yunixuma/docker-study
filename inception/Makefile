@@ -2,7 +2,7 @@ NAME			:= Inception
 export SV		:= nginx
 export APP		:= wordpress
 export DB		:= mariadb
-export DATADIR	:= /home/${USER}/data
+export DATADIR	:= $(HOME)/data
 export DOMAIN	:= 42.fr
 export ENVFILE	:= ../.env
 SRCDIR			:= ./srcs
@@ -44,7 +44,7 @@ export IP_APP		:= 172.30.0.3
 export IP_DB		:= 172.30.0.4
 
 all: up clean
-up: dir cert
+up: cert vol
 	docker compose $(YAML) up -d --build
 up-sv:
 	docker compose $(YAML) up $(SV) -d --build
@@ -52,13 +52,16 @@ up-app:
 	docker compose $(YAML) up $(APP) -d --build
 up-db:
 	docker compose $(YAML) up $(DB) -d --build
-dir:
+vol:
 	-mkdir -p $(DATADIR)
 	-mkdir -p $(DATADIR)/$(APP)
 	-mkdir -p $(DATADIR)/$(DB)
+del_vol:
+	-sudo rm -rf $(DATADIR)/$(DB)
+	-rm -rf $(DATADIR)
 $(CERT_DIR):
-	mkdir -p $(CERT_DIR)
-cert: $(CERT_DIR)
+	-mkdir -p $(CERT_DIR)
+cert: $(CERT_DIR) cert_exists
 ifeq ("$(wildcard $(KEY_PATH))", "")
 	openssl genrsa -out $(KEY_PATH) 2048
 	openssl req \
@@ -74,8 +77,8 @@ ifeq ("$(wildcard $(KEY_PATH))", "")
 endif
 del_cert:
 	-rm $(KEY_PATH) $(CSR_PATH) $(CERT_PATH)
-
-build: dir
+	-rmdir $(CERT_DIR)
+build: vol cert
 	-docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
 	docker compose $(YAML) build --no-cache
 start:
@@ -150,7 +153,7 @@ fclean: del_cert
 	-docker network rm $(NW)
 	# -docker container rm --force $(CTNR_SV) $(CTNR_APP) $(CTNR_DB)
 	# -docker image rm --force $(IMG_SV) $(IMG_APP) $(IMG_DB)
-	-rm -rf /home/${USER}/data
+	$(MAKE) del_vol
 purge: fclean
 	-docker container ls | awk -F' ' 'NR>1 {print $$1}' | xargs --no-run-if-empty docker rm -f 
 	-docker volume ls | awk -F' ' 'NR>1 {print $$2}' | xargs --no-run-if-empty docker volume rm
@@ -159,9 +162,10 @@ purge: fclean
 	-docker network prune -f
 	-docker image prune -f
 	-docker system prune -f
-re: fclean build up
+re: fclean
+	$(MAKE) all
 
-.PHONY: up build start restart config stop down \
-		dir clean fclean re purge cert del_cert \
+.PHONY: all up build start restart config stop down \
+		vol clean fclean re purge cert del_cert cert_exists \
 		ls info info-db log log-sv log-app log-db \
 		login-sv login-app login-db \
