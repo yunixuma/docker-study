@@ -25,7 +25,7 @@ export CTNR_DB		:= $(FIX_CTNR)_$(DB)
 export VOL_APP		:= $(FIX_VOL)_$(APP)
 export VOL_DB		:= $(FIX_VOL)_$(DB)
 include .env
-ifeq ($MAKECMDGOALS, asuser)
+ifeq ("$(USER_42)", "")
 	export DOMAIN	:= $(USER).$(BASEDOMAIN)
 else
 	export DOMAIN	:= $(USER_42).$(BASEDOMAIN)
@@ -34,7 +34,6 @@ export MYSQL_ROOT_PASSWORD
 export WP_DB_NAME
 export WP_DB_USER
 export WP_DB_PASSWORD
-export WP_HOME		:= $(APP).$(USER).$(DOMAIN)
 export WP_TITLE
 export WP_ADMIN_USER
 export WP_ADMIN_PASSWORD
@@ -48,7 +47,6 @@ export IP_APP		:= 172.30.0.3
 export IP_DB		:= 172.30.0.4
 
 all: up clean
-asuser: all
 up: cert vol
 	docker compose $(YAML) up -d --build
 up-sv:
@@ -128,7 +126,7 @@ info:
 	-docker compose $(YAML) exec $(CTNR_APP) wordpress -T
 	-docker compose $(YAML) exec $(CTNR_DB) mariadb -T
 info-db:
-	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user, host FROM mysql.user;"
+	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user,host FROM mysql.user;"
 	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user,host FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2 "@" $$3}' | tr -d " " | grep -v "^$$" | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW CREATE USER name;"
 	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SELECT user,host FROM mysql.user;" | awk -F'|' 'NR>2 {print $$2 "@" $$3}' | tr -d " " | grep -v "^$$" | xargs -Iname docker exec -i $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW GRANTS FOR name;"
 	-docker exec -it $(CTNR_DB) mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e "SHOW databases;"
