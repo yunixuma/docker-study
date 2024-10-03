@@ -1,32 +1,36 @@
-NAME			:= Inception
-export SV		:= nginx
-export APP		:= wordpress
-export DB		:= mariadb
-export DATADIR	:= $(HOME)/data
-export DOMAIN	:= 42.fr
-export ENVFILE	:= ../.env
-SRCDIR			:= ./srcs
-YAML			:= -f $(SRCDIR)/docker-compose.yml
-FIX_PJ			:= incep
-FIX_IMG			:= $(FIX_PJ)-img
-FIX_CTNR		:= $(FIX_PJ)-ctnr
-FIX_VOL			:= $(FIX_PJ)-vol
-CERT_DIR		:= $(SRCDIR)/nginx/ssl
-KEY_PATH		:= $(CERT_DIR)/server.key
-CSR_PATH		:= $(CERT_DIR)/server.csr
-CERT_PATH		:= $(CERT_DIR)/server.crt
-export NW		:= $(FIX_PJ)-nw
-export IMG_SV	:= $(FIX_IMG)_$(SV)
-export IMG_APP	:= $(FIX_IMG)_$(APP)
-export IMG_DB	:= $(FIX_IMG)_$(DB)
-export CTNR_SV	:= $(FIX_CTNR)_$(SV)
-export CTNR_APP	:= $(FIX_CTNR)_$(APP)
-export CTNR_DB	:= $(FIX_CTNR)_$(DB)
-export VOL_APP	:= $(FIX_VOL)_$(APP)
-export VOL_DB	:= $(FIX_VOL)_$(DB)
+NAME				:= Inception
+export SV			:= nginx
+export APP			:= wordpress
+export DB			:= mariadb
+export DATADIR		:= $(HOME)/data
+export BASEDOMAIN	:= 42.fr
+export ENVFILE		:= ../.env
+SRCDIR				:= ./srcs
+YAML				:= -f $(SRCDIR)/docker-compose.yml
+FIX_PJ				:= incep
+FIX_IMG				:= $(FIX_PJ)-img
+FIX_CTNR			:= $(FIX_PJ)-ctnr
+FIX_VOL				:= $(FIX_PJ)-vol
+CERT_DIR			:= $(SRCDIR)/nginx/ssl
+KEY_PATH			:= $(CERT_DIR)/server.key
+CSR_PATH			:= $(CERT_DIR)/server.csr
+CERT_PATH			:= $(CERT_DIR)/server.crt
+export NW			:= $(FIX_PJ)-nw
+export IMG_SV		:= $(FIX_IMG)_$(SV)
+export IMG_APP		:= $(FIX_IMG)_$(APP)
+export IMG_DB		:= $(FIX_IMG)_$(DB)
+export CTNR_SV		:= $(FIX_CTNR)_$(SV)
+export CTNR_APP		:= $(FIX_CTNR)_$(APP)
+export CTNR_DB		:= $(FIX_CTNR)_$(DB)
+export VOL_APP		:= $(FIX_VOL)_$(APP)
+export VOL_DB		:= $(FIX_VOL)_$(DB)
 include .env
+ifeq ($MAKECMDGOALS, asuser)
+	export DOMAIN	:= $(USER).$(BASEDOMAIN)
+else
+	export DOMAIN	:= $(USER_42).$(BASEDOMAIN)
+endif
 export MYSQL_ROOT_PASSWORD
-export WP_DB_HOST	:= $(DB).$(USER).$(DOMAIN)
 export WP_DB_NAME
 export WP_DB_USER
 export WP_DB_PASSWORD
@@ -44,6 +48,7 @@ export IP_APP		:= 172.30.0.3
 export IP_DB		:= 172.30.0.4
 
 all: up clean
+asuser: all
 up: cert vol
 	docker compose $(YAML) up -d --build
 up-sv:

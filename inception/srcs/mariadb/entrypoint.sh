@@ -5,6 +5,11 @@
 
 PATH_DB=/var/lib/mysql
 PATH_LOG=~/entrypoint.log
+echo "[`date +"%Y-%m-%d %H:%M:%S"`]\t$0" >> $PATH_LOG
+
+echo "PATH_DB=$PATH_DB" >> $PATH_LOG
+echo "PATH_LOG=$PATH_LOG" >> $PATH_LOG
+echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" >> $PATH_LOG
 
 cd /usr
 mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&1 \
@@ -15,7 +20,10 @@ mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&
 # mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
 service mariadb start
 
-mysql -u root < /root/setup.sql >> $PATH_LOG 2>&1
+if [ -f "/root/setup.sql" ]; then
+    mysql -u root < /root/setup.sql >> $PATH_LOG 2>&1
+    rm /root/setup.sql
+fi
 
 # pkill mysqld
 # service mariadb stop
