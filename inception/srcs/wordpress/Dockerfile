@@ -80,8 +80,8 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 # EXPOSE 3306
 
 ## Setup & start the WordPress application
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
+COPY entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
+ENTRYPOINT ["sh", "-c", "/root/entrypoint.sh"]
 # CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
 # CMD ["php-fpm7.4", "-F"]

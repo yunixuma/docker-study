@@ -7,6 +7,6 @@ wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PA
 wp core install --url="http://$WP_HOME/" --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --path="/var/www/html" --allow-root
 wp user create "$WP_SUB_USER" "$WP_SUB_EMAIL" --role=subscriber --user_pass="$WP_SUB_PASSWORD" --allow-root
 # wp plugin install --activate --allow-root
-
+rm index.htm*
 php -S 0.0.0.0:443 -t /var/www/html &
 php-fpm7.4 -F
