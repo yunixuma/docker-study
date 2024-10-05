@@ -45,6 +45,7 @@ export IP_SUBNET	:= 172.30.0.0/24
 export IP_SV		:= 172.30.0.2
 export IP_APP		:= 172.30.0.3
 export IP_DB		:= 172.30.0.4
+HOSTS_EXISTS		:= $(shell cat /etc/hosts | grep -E $(DOMAIN))
 
 all: up clean
 up: cert vol
@@ -57,6 +58,10 @@ up-db:
 	docker compose $(YAML) up $(DB) -d --build
 pre:
 	-sh ./install-docker.sh
+ifeq ("$(HOSTS_EXISTS)", "")
+	-echo "\
+$(IP_SV)	$(DOMAIN)" | sudo tee -a /etc/hosts
+endif
 vol:
 	-mkdir -p $(DATADIR)
 	-mkdir -p $(DATADIR)/$(APP)
