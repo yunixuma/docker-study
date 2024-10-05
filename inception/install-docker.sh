@@ -54,5 +54,5 @@ echo \
 exec_cmd "sudo apt-get update"
 install_cmd docker-ce docker-ce-cli containerd.io
 exec_cmd "sudo usermod -aG docker $USER"
-exec_cmd "sudo systemctl enable docker"
-exec_cmd "sudo systemctl start docker"
+# exec_cmd "sudo systemctl enable docker"
+exec_cmd "sudo service docker start"

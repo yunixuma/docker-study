@@ -31,7 +31,7 @@ RUN chmod +x /setup.sh
 RUN sh /setup.sh; exit 0
 
 ## Open network ports
-EXPOSE 80 443
+EXPOSE 443
 ## Start nginx service
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
