@@ -10,6 +10,7 @@ echo "[`date +"%Y-%m-%d %H:%M:%S"`]\t$0" >> $PATH_LOG
 echo "PATH_DB=$PATH_DB" >> $PATH_LOG
 echo "PATH_LOG=$PATH_LOG" >> $PATH_LOG
 echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" >> $PATH_LOG
+echo "WP_DB_USER=$WP_DB_USER" >> $PATH_LOG
 
 cd /usr
 mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&1 \
@@ -17,15 +18,16 @@ mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&
 
 # mysqld_safe --skip-grant-tables &
 # mysqld_safe &
-mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
-# service mariadb start
+# mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
+service mariadb start
 
-if [ -f "/root/setup.sql" ]; then
+# if [ -f "/root/setup.sql" ]; then
     mysql -u root < /root/setup.sql >> $PATH_LOG 2>&1
-    rm /root/setup.sql
-fi
+    # rm /root/setup.sql
+# fi
 
 pkill mariadbd
 # service mariadb stop
+# mariadbd-safe -u dbuser --datadir=$PATH_DB >> PATH_LOG 2>&1
+mariadbd -u $WP_DB_USER --datadir=$PATH_DB >> PATH_LOG 2>&1
 # tail -f /dev/null
-mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1
