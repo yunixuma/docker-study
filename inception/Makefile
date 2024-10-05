@@ -55,6 +55,8 @@ up-app:
 	docker compose $(YAML) up $(APP) -d --build
 up-db:
 	docker compose $(YAML) up $(DB) -d --build
+pre:
+	-sh ./install-docker.sh
 vol:
 	-mkdir -p $(DATADIR)
 	-mkdir -p $(DATADIR)/$(APP)
@@ -64,7 +66,7 @@ del_vol:
 	-rm -rf $(DATADIR)
 $(CERT_DIR):
 	-mkdir -p $(CERT_DIR)
-cert: $(CERT_DIR) cert_exists
+cert: $(CERT_DIR)
 ifeq ("$(wildcard $(KEY_PATH))", "")
 	openssl genrsa -out $(KEY_PATH) 2048
 	openssl req \
@@ -168,7 +170,8 @@ purge: fclean
 re: fclean
 	$(MAKE) all
 
-.PHONY: all up build start restart config stop down \
-		vol clean fclean re purge cert del_cert cert_exists \
-		ls info info-db log log-sv log-app log-db \
-		login-sv login-app login-db \
+.PHONY: all up up-sv up-app up-db \
+	build start restart config stop down \
+	vol del_vol pre clean fclean re purge cert del_cert \
+	ls config info info-db log log-sv log-app log-db \
+	login-sv login-app login-db \
