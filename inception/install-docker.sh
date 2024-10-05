@@ -23,7 +23,8 @@ exec_cmd() {
 	$CMD >> $PATH_LOG 2>&1
 }
 install_cmd() {
-	exec_cmd "sudo apt-get install -y $@"
+    CMD="$@"
+	exec_cmd "sudo apt-get install -y $CMD"
 }
 
 exec_cmd "apt-get update"
@@ -52,6 +53,6 @@ echo \
 	$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 exec_cmd "sudo apt-get update"
 install_cmd docker-ce docker-ce-cli containerd.io
-exec_cmd "sudo usermod -aG docker $$(USER)"
+exec_cmd "sudo usermod -aG docker $USER"
 exec_cmd "sudo systemctl enable docker"
 exec_cmd "sudo systemctl start docker"
