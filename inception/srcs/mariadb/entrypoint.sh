@@ -1,7 +1,7 @@
 #!/bin/bash
 # mkdir -p /var/lib/mysql
 # chown -hR 101:101 /var/lib/mysql
-# chmod 777 -R /var/lib/mysql/
+# chmod 755 -R /var/lib/mysql/
 
 PATH_DB=/var/lib/mysql
 PATH_LOG=~/entrypoint.log
@@ -17,14 +17,15 @@ mysql_install_db --user=mysql --basedir=/usr --datadir=$PATH_DB >> $PATH_LOG 2>&
 
 # mysqld_safe --skip-grant-tables &
 # mysqld_safe &
-# mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
-service mariadb start
+mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1 &
+# service mariadb start
 
 if [ -f "/root/setup.sql" ]; then
     mysql -u root < /root/setup.sql >> $PATH_LOG 2>&1
     rm /root/setup.sql
 fi
 
-# pkill mysqld
+pkill mariadbd
 # service mariadb stop
-tail -f /dev/null
+# tail -f /dev/null
+mariadbd-safe --datadir=$PATH_DB >> PATH_LOG 2>&1
