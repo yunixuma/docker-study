@@ -1,0 +1,11 @@
+.git
+.DS_Store
+# .env
+*.key
+*.csr
+*.crt
+*.pem
+*.log
+*.pid
+*.run
+*.sock

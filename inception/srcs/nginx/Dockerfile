@@ -24,11 +24,11 @@ RUN rm -rf /var/lib/apt/lists/*
 COPY ./default.conf /etc/nginx/conf.d/
 COPY ./ssl/server.crt /etc/ssl/certs/nginx.crt
 COPY ./ssl/server.key /etc/ssl/private/nginx.key
-RUN chmod -R 755 /var/www/html
+# RUN chmod -R 755 /var/www/html
 
-COPY setup.sh /setup.sh
-RUN chmod +x /setup.sh
-RUN sh /setup.sh; exit 0
+# COPY setup.sh /root/setup.sh
+# RUN chmod +x /root/setup.sh
+# RUN sh /root/setup.sh; exit 0
 
 ## Open network ports
 EXPOSE 443

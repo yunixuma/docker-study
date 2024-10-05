@@ -48,8 +48,6 @@ RUN rm -rf /var/lib/apt/lists/*
 ## Prepare files & change Permissions
 RUN mkdir -p /run/php/
 RUN chmod 755 -R /run/php/
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 755 /var/www/html
 
 ## Configure PHP-FPM
 # COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
