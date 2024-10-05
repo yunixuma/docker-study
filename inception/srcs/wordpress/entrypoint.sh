@@ -22,7 +22,8 @@ echo "WP_SUB_PASSWORD=$WP_SUB_PASSWORD" >> $PATH_LOG
 
 cd $PATH_SITE
 chown -R www-data:www-data ./
-chmod -R 755 ./
+find ./ -type d -exec chmod 755 {} +
+find ./ -type f -exec chmod 644 {} +
 # ls wp-login.php
 if [ ! -f "wp-login.php" ]; then
     # mysql -u $WP_DB_USER --password=$WP_DB_PASSWORD --host $WP_DB_HOST --connect-timeout 300
