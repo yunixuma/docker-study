@@ -16,12 +16,12 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-server
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-common
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes tzdata
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
 
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 ## Debugging

@@ -8,13 +8,13 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes nginx
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes openssl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes ca-certificates
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes lsof
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes lsof
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 # Enable OpenSSL extension

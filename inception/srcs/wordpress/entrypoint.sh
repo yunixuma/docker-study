@@ -23,6 +23,7 @@ echo "WP_SUB_PASSWORD=$WP_SUB_PASSWORD" >> $PATH_LOG
 cd $PATH_SITE
 # ls wp-login.php
 if [ ! -f "wp-login.php" ]; then
+	chmod 755 ./ 2>> $PATH_LOG
 	# mysql -u $WP_DB_USER --password=$WP_DB_PASSWORD --host $WP_DB_HOST --connect-timeout 300
 	wp core download --path="$PATH_SITE" --allow-root >> $PATH_LOG 2>&1
 	wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" --dbhost="$WP_DB_HOST" --path="$PATH_SITE" --allow-root >> $PATH_LOG 2>&1

@@ -25,24 +25,24 @@ RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-fpm
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-phar
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-intl
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-dom
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-dom
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-mysqli
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-json
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xml
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xmlreader
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-ctype
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-json
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xml
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xmlreader
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-ctype
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-zlib
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-openssl
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
 
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes sudo
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes systemd
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes vim
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes net-tools
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes iputils-ping
 RUN rm -rf /var/lib/apt/lists/*
 
 ## Prepare files & change Permissions
