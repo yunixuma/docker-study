@@ -19,21 +19,28 @@ ENV WP_HOME=$WP_HOME
 # ARG WP_SUB_PASSWORD=$WP_SUB_PASSWORD
 
 ## Install WordPress dependencies
+## Refer to https://make.wordpress.org/hosting/handbook/server-environment/
 # RUN ls -l /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-fpm
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-phar
-RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-intl
-# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-dom
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-mysqli
-# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-json
-# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xml
+
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-json
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-dom
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xml
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-intl
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-xmlreader
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-ctype
-# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-curl
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-mbstring
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-pcre
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-igbinary
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-zlib
+RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-zip
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-openssl
+# RUN apt-get install -y -o Debug::pkgProblemResolver=yes php7.4-redis
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes curl
 # RUN apt-get install -y -o Debug::pkgProblemResolver=yes wordpress
 RUN apt-get install -y -o Debug::pkgProblemResolver=yes mariadb-client
