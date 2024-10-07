@@ -13,7 +13,8 @@ clone_repo() {
 # sudo -V || {
 # 	apt-get install -y sudo
 # }
-if (ls /root/*); then
+ls /root/*
+if [ $? -ne 0 ]; then
 	SUDO="sudo"
 else
 	SUDO=""
