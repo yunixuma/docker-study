@@ -68,7 +68,7 @@ echo \
 	"deb [arch="$(dpkg --print-architecture)" signed-by=$KEYRING] https://download.docker.com/linux/ubuntu \
 	"$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
 	$SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
-exec_cmd "$SUDO apt-get update"\
+exec_cmd "$SUDO apt-get update"
 install_cmd docker-ce docker-ce-cli containerd.io
 exec_cmd "$SUDO usermod -aG docker $USER"
 # exec_cmd "$SUDO systemctl enable docker"

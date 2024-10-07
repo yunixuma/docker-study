@@ -50,6 +50,7 @@ HOSTS_EXISTS		:= $(shell cat /etc/hosts | grep -E $(DOMAIN))
 all: up clean
 up: cert vol
 	docker compose $(YAML) up -d --build
+	echo "[`date +"%Y-%m-%d %H:%M:%S"`]\t$0"
 up-sv:
 	docker compose $(YAML) up $(SV) -d --build
 up-app:
@@ -150,11 +151,11 @@ log-db:
 	docker inspect --format='{{.LogPath}}' $(CTNR_DB) | sudo xargs tail -f
 	# docker logs --tail 50 --follow --timestamps $(CTNR_DB)
 stop:
-	docker-compose $(YAML) stop
+	docker compose $(YAML) stop
 restart:
-	docker-compose $(YAML) restart
+	docker compose $(YAML) restart
 down: stop
-	docker-compose $(YAML) down -v
+	docker compose $(YAML) down -v
 clean:
 	-docker image ls | grep '<none>' | awk -F' ' '{print $$3}' | xargs --no-run-if-empty docker rmi --force
 fclean: del_cert
