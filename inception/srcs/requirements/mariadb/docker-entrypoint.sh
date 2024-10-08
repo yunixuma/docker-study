@@ -25,6 +25,6 @@ service mariadb start
 
 pkill mariadbd
 # service mariadb stop
-# mariadbd-safe -u dbuser --datadir=$PATH_DB 2>&1 | tee -a $PATH_LOG
+# mariadbd-safe -u $WP_DB_USER --datadir=$PATH_DB 2>&1 | tee -a $PATH_LOG
 mariadbd -u $WP_DB_USER --datadir=$PATH_DB 2>&1 | tee -a $PATH_LOG
 # tail -f /dev/null

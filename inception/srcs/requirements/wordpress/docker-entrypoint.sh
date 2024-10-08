@@ -25,7 +25,7 @@ if [ ! -f "wp-login.php" ]; then
 	chmod 755 ./ 2>&1 | tee -a $PATH_LOG
 	# mysql -u $WP_DB_USER --password=$WP_DB_PASSWORD --host $WP_DB_HOST --connect-timeout 300
 	wp core download --path="$PATH_SITE" --allow-root 2>&1 | tee -a $PATH_LOG
-	wp core config --dbname="$WP_DB_NAME" --dbuser="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" \
+	wp core config --dbname="$WP_DB_NAME" --$WP_DB_USER="$WP_DB_USER" --dbpass="$WP_DB_PASSWORD" \
 		--dbhost="$WP_DB_HOST" --path="$PATH_SITE" --allow-root 2>&1 | tee -a $PATH_LOG
 	wp core install --url="http://$WP_HOME/" --title="$WP_TITLE" \
 		--admin_user="$WP_ADMIN_USER" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" \
