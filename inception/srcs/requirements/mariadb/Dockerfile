@@ -49,11 +49,11 @@ RUN grep "bind-address[ \t]*=[ \t]*$WP_DB_HOST" $PATH_CONF || sed -i "/\(bind-ad
 ## Open network ports
 EXPOSE 3306
 
-## Execute entrypoint.sh script
-COPY entrypoint.sh /root/entrypoint.sh
-RUN chmod +x /root/entrypoint.sh
+## Execute docker-entrypoint.sh script
+COPY docker-entrypoint.sh /root/docker-entrypoint.sh
+RUN chmod +x /root/docker-entrypoint.sh
 ## Setup & start MariaDB service
-ENTRYPOINT [ "sh", "-c", "/root/entrypoint.sh"] 
+ENTRYPOINT [ "sh", "-c", "/root/docker-entrypoint.sh"] 
 # CMD ["mysqld_safe", "--user=$WP_DB_USER"]
 
 

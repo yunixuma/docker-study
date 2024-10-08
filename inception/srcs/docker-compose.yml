@@ -4,7 +4,7 @@ services:
   nginx:
     image: ${IMG_SV}
     build:
-      context: ./${SV}
+      context: ./${SUBSRCDIR}/${SV}
     container_name: ${CTNR_SV}
     hostname: ${SV}.${DOMAIN}
     init: true
@@ -31,7 +31,7 @@ services:
   wordpress:
     image: ${IMG_APP}
     build:
-      context: ./${APP}
+      context: ./${SUBSRCDIR}/${APP}
       args:
         WP_DB_HOST: ${DB}.${DOMAIN}
         # WP_DB_NAME: ${WP_DB_NAME}
@@ -85,7 +85,7 @@ services:
   mariadb:
     image: ${IMG_DB}
     build:
-      context: ./${DB}
+      context: ./${SUBSRCDIR}/${DB}
       args:
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         WP_DB_HOST: ${DB}.${DOMAIN}

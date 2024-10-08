@@ -4,14 +4,15 @@ export APP			:= wordpress
 export DB			:= mariadb
 export DATADIR		:= $(HOME)/data
 export BASEDOMAIN	:= 42.fr
-export ENVFILE		:= ../.env
+export ENVFILE		:= ./.env
 SRCDIR				:= ./srcs
+export SUBSRCDIR	:= ./requirements
 YAML				:= -f $(SRCDIR)/docker-compose.yml
 FIX_PJ				:= incep
 FIX_IMG				:= $(FIX_PJ)-img
 FIX_CTNR			:= $(FIX_PJ)-ctnr
 FIX_VOL				:= $(FIX_PJ)-vol
-CERT_DIR			:= $(SRCDIR)/nginx/ssl
+CERT_DIR			:= $(SRCDIR)/$(SUBSRCDIR)/$(APP)/ssl
 KEY_PATH			:= $(CERT_DIR)/server.key
 CSR_PATH			:= $(CERT_DIR)/server.csr
 CERT_PATH			:= $(CERT_DIR)/server.crt
@@ -24,7 +25,7 @@ export CTNR_APP		:= $(FIX_CTNR)_$(APP)
 export CTNR_DB		:= $(FIX_CTNR)_$(DB)
 export VOL_APP		:= $(FIX_VOL)_$(APP)
 export VOL_DB		:= $(FIX_VOL)_$(DB)
-include .env
+include $(SRCDIR)/.env
 ifeq ("$(USER_42)", "")
 	export DOMAIN	:= $(USER).$(BASEDOMAIN)
 else

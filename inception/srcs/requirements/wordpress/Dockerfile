@@ -92,8 +92,8 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 # RUN echo "WP_TITLE=$WP_TITLE" >> /root/install.log
 
 ## Setup & start the WordPress application
-COPY entrypoint.sh /root/entrypoint.sh
-RUN chmod +x /root/entrypoint.sh
-ENTRYPOINT ["sh", "-c", "/root/entrypoint.sh"]
+COPY docker-entrypoint.sh /root/docker-entrypoint.sh
+RUN chmod +x /root/docker-entrypoint.sh
+ENTRYPOINT ["sh", "-c", "/root/docker-entrypoint.sh"]
 # CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
 # CMD ["php-fpm7.4", "-F"]
