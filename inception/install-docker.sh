@@ -1,7 +1,7 @@
-#/bin/bash
+#!/bin/bash
 PATH_LOG=./`basename $0 .sh`.log
 
-## include
+## include other source
 . ./install-common.sh
 
 log_echo "\033[32;1m[$(date +"%Y-%m-%d %H:%M:%S")]\t$0\033[m"

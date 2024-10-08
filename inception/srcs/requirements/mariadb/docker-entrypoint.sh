@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # mkdir -p /var/lib/mysql
 # chown -hR 101:101 /var/lib/mysql
 # chmod 755 -R /var/lib/mysql/
