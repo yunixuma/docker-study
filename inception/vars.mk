@@ -37,7 +37,9 @@ export CTNR_DB		:= $(FIX_CTNR)_$(DB)
 export VOL_APP		:= $(FIX_VOL)_$(APP)
 export VOL_DB		:= $(FIX_VOL)_$(DB)
 include $(SRCDIR)/.env
-ifeq ("$(USER_42)", "")
+ifneq ("$(DOMAIN)", "")
+	export DOMAIN	:= $(DOMAIN)
+else ifeq ("$(USER_42)", "")
 	export DOMAIN	:= $(USER).$(BASEDOMAIN)
 else
 	export DOMAIN	:= $(USER_42).$(BASEDOMAIN)
