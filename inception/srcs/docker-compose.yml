@@ -129,7 +129,7 @@ services:
     restart: unless-stopped
 
 networks:
-  my-network:
+  docker-network:
     # name: ${NW}
     driver: bridge
     ipam:
