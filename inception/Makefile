@@ -6,7 +6,7 @@
 #    By: ykosaka <ykosaka@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/14 01:04:04 by ykosaka           #+#    #+#              #
-#    Updated: 2024/10/08 14:22:38 by ykosaka          ###   ########.fr        #
+#    Updated: 2024/10/08 15:14:38 by ykosaka          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,13 +61,14 @@ build: vol cert
 start:
 	docker compose $(YAML) start
 ls:
-	docker image ls
-	docker container ls
+	docker image ls -a
+	docker container ls -as
 	docker volume ls
 	docker network ls
-	docker compose $(YAML) ls
-	docker compose $(YAML) ps
-	docker ps
+	# docker compose $(YAML) ls -a
+	# docker compose $(YAML) ps
+	# docker container ls -q | xargs -Iid docker port id
+	docker ps -a
 config:
 	docker compose $(YAML) config
 login-sv:
