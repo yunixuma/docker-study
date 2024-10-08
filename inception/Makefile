@@ -47,7 +47,7 @@ ifeq ("$(wildcard $(KEY_PATH))", "")
 		-days 365 \
 		-nodes \
 		-x509 \
-		-subj "/C=FR/ST=Paris/L=boulevard Bessières/O=$(NAME)/CN=$(WP_HOME)" \
+		-subj "/C=FR/ST=Paris/L=boulevard Bessières/O=$(NAME)/CN=$(DOMAIN)" \
 		-keyout $(KEY_PATH) \
 		-out $(CERT_PATH)
 	# openssl x509 -req -days 365 -in $(CSR_PATH) -signkey $(KEY_PATH) -out $(CERT_PATH)
