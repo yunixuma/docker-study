@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATH_DB=/var/lib/mysql
-PATH_LOG=./`basename $0 .sh`.log
+PATH_LOG=/root/`basename $0 .sh`.log
 echo "[`date +"%Y-%m-%d %H:%M:%S"`]\t$0" | tee -a $PATH_LOG
 
 echo "PATH_DB=$PATH_DB" >> $PATH_LOG
