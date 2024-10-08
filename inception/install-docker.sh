@@ -1,6 +1,22 @@
 #/bin/bash
-PATH_LOG=./install-docker.log
-echo "[$(date +"%Y-%m-%d %H:%M:%S")]\t$0" >> $PATH_LOG
+PATH_LOG=./`basename $0 .sh`.log
+
+## Define functions
+log_echo() {
+	echo -e "$@" | tee -a $PATH_LOG
+}
+exec_cmd() {
+	CMD=$1
+	log_echo "\033[36m> \033[1m$CMD\033[m"
+	$CMD 2>&1 | tee -a $PATH_LOG
+	# $CMD > >(tee -a $PATH_LOG >&1 ) 2> >(tee -a $PATH_LOG >&2)
+}
+install_cmd() {
+    CMD="$@"
+	exec_cmd "$SUDO apt-get install -y $CMD"
+}
+
+log_echo "\033[32;1m[$(date +"%Y-%m-%d %H:%M:%S")]\t$0\033[m"
 
 ## Clone the repository
 clone_repo() {
@@ -13,23 +29,14 @@ clone_repo() {
 # sudo -V || {
 # 	apt-get install -y sudo
 # }
-ls /root/*
+ls /root/* >> /dev/null
 if [ $? -ne 0 ]; then
 	SUDO="sudo"
+	log_echo "\033[35mRun as regular user.\033[m"
 else
 	SUDO=""
+	log_echo "\033[35mRun as root.\033[m"
 fi
-
-## Define functions
-exec_cmd() {
-	CMD=$1
-	echo "> $CMD" >> $PATH_LOG
-	$CMD >> $PATH_LOG 2>&1
-}
-install_cmd() {
-    CMD="$@"
-	exec_cmd "$SUDO apt-get install -y $CMD"
-}
 
 exec_cmd "$SUDO apt-get update"
 
@@ -45,13 +52,13 @@ make -v || {
 	install_cmd make
 }
 
-## Check if docker compose is already installed
+log_echo "## Check if docker compose is already installed"
 docker compose version && {
-	echo "docker compose command is already installed." >> $PATH_LOG
+	log_echo "docker compose command is already installed."
 	exit 0
 }
 
-## Install docker compose
+log_echo "## Install docker compose"
 ## cited from https://matsuand.github.io/docs.docker.jp.onthefly/engine/install/debian/
 docker -v || {
 	exec_cmd "$SUDO apt-get remove docker-compose docker docker-engine docker.io containerd runc"
@@ -61,14 +68,14 @@ install_cmd ca-certificates gnupg
 KEYRING=/usr/share/keyrings/docker-archive-keyring.gpg
 # $SUDO install -m 0755 -d /etc/apt/keyrings
 # curl -fsSL https://download.docker.com/linux/debian/gpg | $SUDO gpg --dearmor -o $KEYRING
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | $SUDO gpg --dearmor -o $KEYRING
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | $SUDO gpg --dearmor -o $KEYRING 2>&1 | tee $PATH_LOG 
 # echo \
 # 	"deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING] https://download.docker.com/linux/debian \
 # 	$(lsb_release -cs) stable" | $SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
 echo \
 	"deb [arch="$(dpkg --print-architecture)" signed-by=$KEYRING] https://download.docker.com/linux/ubuntu \
 	"$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-	$SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
+	$SUDO tee /etc/apt/sources.list.d/docker.list 2>&1 | tee $PATH_LOG
 exec_cmd "$SUDO apt-get update"
 install_cmd docker-ce docker-ce-cli containerd.io
 exec_cmd "$SUDO usermod -aG docker $USER"
