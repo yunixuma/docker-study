@@ -5,6 +5,8 @@ services:
     image: ${IMG_SV}
     build:
       context: ./${SUBSRCDIR}/${SV}
+      args:
+        WP_HOME: ${DOMAIN}
     container_name: ${CTNR_SV}
     hostname: ${SV}.${DOMAIN}
     init: true

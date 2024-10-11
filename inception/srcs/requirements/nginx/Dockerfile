@@ -6,13 +6,17 @@
 #    By: ykosaka <ykosaka@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/14 01:04:04 by ykosaka           #+#    #+#              #
-#    Updated: 2024/10/08 14:14:57 by ykosaka          ###   ########.fr        #
+#    Updated: 2024/10/11 21:03:59 by ykosaka          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ## Pull the base image
 FROM debian:bullseye-slim
 # FROM debian:bullseye
+
+## Args for building the image
+ARG PATH_CONF=/etc/nginx/conf.d/default.conf
+ARG WP_HOME=$WP_HOME
 
 ## Install nginx dependencies
 # RUN ls -l /etc/apt/sources.list
@@ -33,10 +37,11 @@ RUN rm -rf /var/lib/apt/lists/*
 # RUN echo "extension=openssl" >> /etc/php/7.4/fpm/conf.d/20-openssl.ini
 
 ## Prepare files & change Permissions
-COPY ./default.conf /etc/nginx/conf.d/
+COPY ./default.conf $PATH_CONF
 COPY ./ssl/server.crt /etc/ssl/certs/nginx.crt
 COPY ./ssl/server.key /etc/ssl/private/nginx.key
 # RUN chmod -R 755 /var/www/html
+RUN sed -i "s/\$WP_HOME/$WP_HOME/g" $PATH_CONF
 
 # COPY setup.sh /root/setup.sh
 # RUN chmod +x /root/setup.sh
