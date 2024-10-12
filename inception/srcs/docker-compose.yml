@@ -24,9 +24,9 @@ services:
       TZ: ${TZ:-UTC}
     # env_file:
     #   - ${ENV_FILE}
-    depends_on:
-      wordpress:
-        condition: service_healthy
+    # depends_on:
+    #   wordpress:
+    #     condition: service_healthy
     tty: true
     restart: unless-stopped
 
@@ -72,15 +72,15 @@ services:
       TZ: ${TZ:-UTC}
     env_file:
       - ${ENVFILE}
-    depends_on:
-      mariadb:
-        condition: service_healthy
+    # depends_on:
+    #   mariadb:
+    #     condition: service_healthy
     tty: true
-    healthcheck:
-      test: ["CMD-SHELL", "ls -b /var/www/html/* | grep -q .php"]
-      timeout: 5s
-      interval: 5s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD-SHELL", "ls -b /var/www/html/* | grep -q .php"]
+    #   timeout: 5s
+    #   interval: 5s
+    #   retries: 10
       # start_period: 3s 
     restart: unless-stopped
 
@@ -122,11 +122,11 @@ services:
     env_file:
       - ${ENVFILE}
     tty: true
-    healthcheck:
-      test: ["CMD-SHELL", "mysql -h localhost -u $$WP_DB_USER --password=$$WP_DB_PASSWORD -e 'SELECT 1'"]
-      timeout: 5s
-      interval: 5s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD-SHELL", "mysql -h localhost -u $$WP_DB_USER --password=$$WP_DB_PASSWORD -e 'SELECT 1'"]
+    #   timeout: 5s
+    #   interval: 5s
+    #   retries: 10
       # start_period: 3s 
     restart: unless-stopped
 

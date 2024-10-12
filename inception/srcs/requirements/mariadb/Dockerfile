@@ -6,7 +6,7 @@
 #    By: ykosaka <ykosaka@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/14 01:04:04 by ykosaka           #+#    #+#              #
-#    Updated: 2024/10/08 14:14:39 by ykosaka          ###   ########.fr        #
+#    Updated: 2024/10/12 09:02:22 by ykosaka          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,10 @@ FROM debian:bullseye-slim
 # FROM debian:bullseye
 
 ## Args for building the image
+ARG PATH_CONF=/etc/mysql/mariadb.conf.d/50-server.cnf
+ARG DIR_WORK=/root
+ARG FILE_CMD=docker-entrypoint.sh
+ARG FILE_QUERY=setup.sql
 ARG MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
 ARG WP_DB_HOST=$WP_DB_HOST
 ARG WP_DB_NAME=$WP_DB_NAME
@@ -46,15 +50,14 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /run/mysqld
 RUN chown -R mysql:mysql /run/mysqld
 RUN chmod 755 /run/mysqld
-COPY ./setup.sql /root/setup.sql
-RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" /root/setup.sql
-RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" /root/setup.sql
-RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" /root/setup.sql
-RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" /root/setup.sql
-RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" /root/setup.sql
+COPY ./$FILE_QUERY $DIR_WORK/
+RUN sed -i "s/\$MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g" $DIR_WORK/$FILE_QUERY
+RUN sed -i "s/\$WP_DB_HOST/$WP_DB_HOST/g" $DIR_WORK/$FILE_QUERY
+RUN sed -i "s/\$WP_DB_NAME/$WP_DB_NAME/g" $DIR_WORK/$FILE_QUERY
+RUN sed -i "s/\$WP_DB_USER/$WP_DB_USER/g" $DIR_WORK/$FILE_QUERY
+RUN sed -i "s/\$WP_DB_PASSWORD/$WP_DB_PASSWORD/g" $DIR_WORK/$FILE_QUERY
 
 ## Configure MariaDB
-ARG PATH_CONF=/etc/mysql/mariadb.conf.d/50-server.cnf
 RUN grep "bind-address[ \t]*=[ \t]*$WP_DB_HOST" $PATH_CONF || sed -i "/\(bind-address.*$\)/a bind-address            = $WP_DB_HOST" $PATH_CONF
 # sed -i "/\(bind-address.*$\)/a bind-address            = $IP_DB" $PATH_CONF 
 
@@ -62,12 +65,12 @@ RUN grep "bind-address[ \t]*=[ \t]*$WP_DB_HOST" $PATH_CONF || sed -i "/\(bind-ad
 EXPOSE 3306
 
 ## Execute docker-entrypoint.sh script
-COPY docker-entrypoint.sh /root/docker-entrypoint.sh
-RUN chmod +x /root/docker-entrypoint.sh
+COPY ./$FILE_CMD $DIR_WORK/
+RUN chmod +x $DIR_WORK/$FILE_CMD
 ## Setup & start MariaDB service
-ENTRYPOINT [ "sh", "-c", "/root/docker-entrypoint.sh"] 
 # CMD ["mysqld_safe", "--user=$WP_DB_USER"]
-
+ENTRYPOINT [ "sh", "-c", "/root/docker-entrypoint.sh" ] 
+# ENTRYPOINT [ "bash" ]
 
 ## Debugging
 # ENTRYPOINT ["which", "cat"]

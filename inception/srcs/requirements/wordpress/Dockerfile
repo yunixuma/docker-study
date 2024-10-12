@@ -6,7 +6,7 @@
 #    By: ykosaka <ykosaka@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/14 01:04:04 by ykosaka           #+#    #+#              #
-#    Updated: 2024/10/11 12:39:25 by ykosaka          ###   ########.fr        #
+#    Updated: 2024/10/12 08:56:30 by ykosaka          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,9 @@ FROM debian:bullseye-slim
 # FROM debian:bullseye
 
 ## Args for building the image
+ARG PATH_CONF=/etc/php/7.4/fpm/pool.d/www.conf
+ARG DIR_WORK=/root
+ARG FILE_CMD=docker-entrypoint.sh
 # ARG WP_DB_NAME=$WP_DB_NAME
 # ARG WP_DB_USER=$WP_DB_USER
 # ARG WP_DB_PASSWORD=$WP_DB_PASSWORD
@@ -71,7 +74,6 @@ RUN chmod 755 -R /run/php/
 ## Configure PHP-FPM
 # COPY php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 # COPY www.conf /etc/php/7.4/fpm/pool.d/www.conf
-ARG PATH_CONF='/etc/php/7.4/fpm/pool.d/www.conf'
 RUN sed -i "s/\/run\/php\/php7.4-fpm.sock/9000/" $PATH_CONF
 
 ## Install WP-CLI
@@ -99,13 +101,14 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 ## Open network ports
 # EXPOSE 3306
 
-# RUN echo "WP_DB_HOST=$WP_DB_HOST" >> /root/install.log
-# RUN echo "WP_HOME=$WP_HOME" >> /root/install.log
-# RUN echo "WP_TITLE=$WP_TITLE" >> /root/install.log
+# RUN echo "WP_DB_HOST=$WP_DB_HOST" >> $DIR_WORK/install.log
+# RUN echo "WP_HOME=$WP_HOME" >> $DIR_WORK/install.log
+# RUN echo "WP_TITLE=$WP_TITLE" >> $DIR_WORK/install.log
 
 ## Setup & start the WordPress application
-COPY docker-entrypoint.sh /root/docker-entrypoint.sh
-RUN chmod +x /root/docker-entrypoint.sh
-ENTRYPOINT ["sh", "-c", "/root/docker-entrypoint.sh"]
+COPY ./$FILE_CMD $DIR_WORK/
+RUN chmod +x $DIR_WORK/$FILE_CMD
+ENTRYPOINT [ "sh", "-c", "/root/docker-entrypoint.sh" ] 
+# ENTRYPOINT [ "bash" ]
 # CMD ["php", "-S", "0.0.0.0:443", "-t", "/var/www/html"]
 # CMD ["php-fpm7.4", "-F"]

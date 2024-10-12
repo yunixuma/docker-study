@@ -41,3 +41,4 @@ fi
 
 # php -S 0.0.0.0:443 -t $PATH_SITE 2>&1 | tee -a $PATH_LOG &
 php-fpm7.4 -F 2>&1 | tee -a $PATH_LOG
+# tail -f /dev/null
