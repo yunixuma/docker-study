@@ -33,7 +33,7 @@ if [ ! -f "wp-login.php" ]; then
 	wp user create "$WP_SUB_USER" "$WP_SUB_EMAIL" --role=author --user_pass="$WP_SUB_PASSWORD" \
 		--allow-root 2>&1 | tee -a $PATH_LOG
 	# wp plugin install --activate --allow-root
-	rm -f index.htm* 2>&1 | tee -a $PATH_LOG
+	rm -f index*.htm* 2>&1 | tee -a $PATH_LOG
 	chown -R www-data:www-data ./ 2>&1 | tee -a $PATH_LOG
 	find ./ -type d -exec chmod 755 {} + 2>&1 | tee -a $PATH_LOG
 	find ./ -type f -exec chmod 644 {} + 2>&1 | tee -a $PATH_LOG
