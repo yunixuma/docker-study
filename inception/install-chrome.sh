@@ -2,6 +2,8 @@
 PATH_LOG=./`basename $0 .sh`.log
 
 ## include other source
+PWD=`pwd`
+cd `dirname $0`
 . ./install-common.sh
 
 log_echo "\033[32;1m[$(date +"%Y-%m-%d %H:%M:%S")]\t$0\033[m"
@@ -21,3 +23,5 @@ curl -fsSL https://dl.google.com/linux/linux_signing_key.pub \
     | sudo gpg --dearmor -o /usr/share/keyrings/googlechrom-keyring.gpg | tee -a $PATH_LOG
 exec_cmd "$SUDO apt update"
 install_cmd google-chrome-stable
+
+cd $PWD

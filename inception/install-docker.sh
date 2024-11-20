@@ -2,6 +2,8 @@
 PATH_LOG=./`basename $0 .sh`.log
 
 ## include other source
+PWD=`pwd`
+cd `dirname $0`
 . ./install-common.sh
 
 log_echo "\033[32;1m[$(date +"%Y-%m-%d %H:%M:%S")]\t$0\033[m"
@@ -69,3 +71,5 @@ install_cmd docker-ce docker-ce-cli containerd.io
 exec_cmd "$SUDO usermod -aG docker $USER"
 # exec_cmd "$SUDO systemctl enable docker"
 exec_cmd "$SUDO service docker start"
+
+cd $PWD
